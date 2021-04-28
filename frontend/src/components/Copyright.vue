@@ -29,36 +29,33 @@ p {
 // Media Query
 @media screen and (max-width: 1350px) {
   p {
-    margin-top: 13%;
+    margin-top: 10%;
   }
 }
 
 @media screen and (max-width: 1100px) {
   p {
-    margin-top: 10%;
+    margin-top: 8%;
   }
 }
 
 @media screen and (max-width: 900px) {
   p {
     font-size: 20px;
-    margin-top: 15%;
   }
 }
 
 @media screen and (max-width: 640px) {
   p {
-    font-size: 15px;
-    margin-top: 15%;
-  }
-}
-
-@media screen and (max-width: 425px) {
-  p {
-    margin-top: 23%;
-    margin-left: 0px;
+    margin-top: 4%;
     text-align: center;
+    margin-left: 0px;
   }
 }
 
+@media screen and (max-width: 325px) {
+  p {
+    font-size: 18px;
+  }
+}
 </style>

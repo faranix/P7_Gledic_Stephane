@@ -3,18 +3,20 @@
     <div class="login__box">
       <NavLogin title="Connexion" />
 
+      <div class="error-message"></div>
+
       <form class="form" method="post">
         <div class="form__box">
           <label for="email">Email</label>
           <input type="email" name="email" id="email" />
         </div>
-        <button @click="loginUser()" type="button">
-          <span>V</span>
-        </button>
         <div class="form__box">
           <label for="password">Mot de passe</label>
           <input type="password" name="password" id="password" />
         </div>
+        <button @click="loginUser()" type="button">
+          <span>V</span>
+        </button>
       </form>
 
       <Copyright />
@@ -26,6 +28,9 @@
 // @ is an alias to /src
 import NavLogin from "@/components/NavLogin.vue";
 import Copyright from "@/components/Copyright.vue";
+
+// Importer des functions
+const service = require('../service/service.js')
 
 export default {
   name: "Login",
@@ -60,6 +65,11 @@ export default {
             // Passer a la prochaine page
             window.location.href = "http://localhost:8080/#/home";
           })
+        } else {
+          res.json().then(data => {
+            // Afficher un message d'erreur selon la donnée reçu
+            service.showError(data);
+          })
         }
       })
       .catch(error => {
@@ -89,29 +99,34 @@ export default {
   }
 }
 
+
 .form {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  height: 70vh;
+  height: 68%;
 
   &__box {
     display: flex;
     flex-direction: column;
     color: #EFF8E2;
+    margin: 20px;
 
     label {
       text-align: center;
       font-size: 30px;
+      margin-bottom: 5px;
     }
 
     input {
-      width: 315px;
-      height: 43px;
+      width: 800px;
+      height: 50px;
       padding: 0 10px;
       background-color: #23022E;
       color: #EFF8E2;
       border: #EFF8E2 solid 1px;
+      font-size: 20px;
       font-weight: bold;
     }
   }
@@ -123,7 +138,6 @@ export default {
     padding: 20px 50px;
     border: none;
     border-radius: 4px;
-    margin-top: 150px;
     cursor: pointer;
     font-size: 40px;
     font-weight: bold italic;
@@ -159,29 +173,8 @@ export default {
 }
 
 // Media Query
-@media screen and (max-width: 1350px) {
-  .form {
-    height: 40vh;
-    flex-direction: column;
-    margin-top: 18%;
-    &__box {
-      input {
-        width: 800px;
-      }
-    }
-
-    button {
-      order: 3;
-      padding: 20px 80px;
-      font-size: 30px;
-      margin-top: 0px;
-    }
-  }
-}
-
 @media screen and (max-width: 900px) {
   .form {
-    margin-top: 14%;
     &__box {
       label {
         font-size: 20px;
@@ -195,7 +188,7 @@ export default {
   }
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 645px) {
   .form {
     &__box {
       label {
@@ -223,10 +216,6 @@ export default {
       border-radius: 0px;
       box-shadow: none;
     }
-  }
-
-  .form {
-    margin-top: 100px;
   }
 }
 

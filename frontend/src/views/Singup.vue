@@ -3,6 +3,8 @@
     <div class="singup__box">
       <NavLogin title="Inscription" />
 
+      <div class="error-message"></div>
+
       <form class="form" method="post" action="">
         <div class="form__box">
           <label for="pseudo">Pseudo</label>
@@ -30,6 +32,8 @@
 import NavLogin from "@/components/NavLogin.vue";
 import Copyright from "@/components/Copyright.vue";
 
+// Importer des functions
+const service = require('../service/service.js');
 
 export default {
   name: "Singup",
@@ -66,9 +70,15 @@ export default {
         body: JSON.stringify(user)
       })
       .then(res => {
-        res.json().then(data => {
-          console.log(data);
-        })
+        if (res.status == 200) {
+          res.json().then(data => {
+            console.log(data);
+          })
+        } else {
+          res.json().then(data => {
+            service.showError(data);
+          })
+        }
       })
       .catch(error => {
         console.log(error);
@@ -86,8 +96,8 @@ export default {
   align-items: center;
 
   &__box {
-    height: 95vh;
-    width: 95vw;
+    height: 95%;
+    width: 95%;
     border-radius: 100px;
     background-color: #573280;
     border-top: solid 5px #23022E;
@@ -98,58 +108,48 @@ export default {
 
 .form {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  margin-left: 40px;
-  height: 70vh;
-
-  // Div label input
+  height: 70%;
 
   &__box {
     display: flex;
     flex-direction: column;
     color: #EFF8E2;
+    margin: 20px;
 
     label {
       text-align: center;
       font-size: 30px;
+      margin-bottom: 5px;
     }
 
     input {
-      width: 290px;
-      height: 43px;
+      width: 800px;
+      height: 50px;
       padding: 0 10px;
       background-color: #23022E;
       color: #EFF8E2;
       border: #EFF8E2 solid 1px;
+      font-size: 20px;
       font-weight: bold;
     }
-
-    &:nth-child(2) {
-      margin-top: 100px;
-    }
-
-    &:nth-child(3) {
-      margin-top: 200px;
-    }
   }
-  
-  
+
+  // annimation du button
   button {
     position: relative;
-    color: #EFF8E2;
     background-color: #23022E;
     padding: 20px 50px;
     border: none;
     border-radius: 4px;
-    margin-top: 400px;
-    margin-right: 40px;
     cursor: pointer;
-    font-size: 20px;
+    font-size: 40px;
     font-weight: bold italic;
     overflow: hidden;
 
-    & span {
+     & span {
       position: relative;
       z-index: 2;
       color: #EFF8E2;
@@ -178,57 +178,23 @@ export default {
   }
 }
 
-// Media Query
-@media screen and (max-width: 1350px) {
-  .form {
-    height: 40vh;
-    flex-direction: column;
-    margin-top: 18%;
-    &__box {
-      input {
-        width: 800px;
-      }
-
-      &:nth-child(2) {
-      margin-top: 0px;
-      }
-
-      &:nth-child(3) {
-        margin-top: 0px;
-      }
-    }
-
-    button {
-      order: 3;
-      margin-top: 0px;
-      padding: 20px 80px;
-      font-size: 30px;
-    }
-  }
-}
-
 @media screen and (max-width: 900px) {
-    .form {
-    margin-top: 14%;
-    margin-left: 0px;
-
+  .form {
     &__box {
+      margin-top: 5px;
       label {
         font-size: 20px;
-        margin: 10px 0;
       }
 
       input {
         width: 600px;
+        height: 40px;
+        font-size: 14px;
       }
     }
 
     button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 20px;
-      margin-right: 0px;
+      margin-top: 5px;
     }
 
 
@@ -264,10 +230,6 @@ export default {
       box-shadow: none;
     }
   }
-
-  .form {
-    margin-top: 100px;
-  }
 }
 
 @media screen and (max-width: 365px) {
@@ -276,10 +238,7 @@ export default {
       input {
         width: 280px;
       }
-
     }
   }
 }
-
-
 </style>
