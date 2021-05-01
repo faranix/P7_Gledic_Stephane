@@ -2,11 +2,13 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const usersRouter = require('./routers/users');
+
+// Les Routes
+const userRouter = require('./routers/user');
+const postRouter = require('./routers/post');
 
 // Parser les requetes
 app.use(bodyParser.json());
-
 
 // Les access au headers
 app.use((req, res, next) => {
@@ -17,6 +19,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use('/api', usersRouter);
+app.use('/api', userRouter);
+app.use('/api/connect', postRouter);
 
 module.exports = app;

@@ -1,12 +1,10 @@
 <template>
-  <div class="navhome">
-      <div v-if="menuOpen == 1" class="navhome__box">
-        <i @click="menuChange()" class="fas fa-times"></i>
-        <div class="navhome__profile">
-            <p class="navhome__profile__pseudo">{{ pseudo }}</p>
-        </div>
-        <p @click="disconnect()" class="navhome__deconnexion">Déconnexion</p>
-      </div>
+  <div v-if="menuOpen == 1"  class="navhome">
+    <i @click="menuOpen = 0" class="fas fa-times"></i>
+    <div class="navhome__profile">
+        <p class="navhome__profile__pseudo">{{ pseudo }}</p>
+    </div>
+    <p @click="disconnect()" class="navhome__deconnexion">Déconnexion</p>
   </div>
 </template>
 
@@ -26,18 +24,11 @@ export default {
     },
     methods: {
         disconnect() {
-            sessionStorage.removeItem('userToken');
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
             window.location.href = 'http://localhost:8080/#/'
             console.log('disconnect');
         },
-
-        menuChange() {
-            this.menuOpen = 0;
-
-            if (this.menuOpen == 0) {
-                document.querySelector('.navhome').style.background = '#573280';
-            }
-        }
     }
 }
 </script>

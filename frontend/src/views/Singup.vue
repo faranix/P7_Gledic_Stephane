@@ -62,6 +62,7 @@ export default {
         }
       }
       
+      // Permet d'envoyer les information pour la creation d'un profil
       fetch('http://localhost:3000/api/inscription', {
         method: 'post',
         headers: {
@@ -70,10 +71,8 @@ export default {
         body: JSON.stringify(user)
       })
       .then(res => {
-        if (res.status == 200) {
-          res.json().then(data => {
-            console.log(data);
-          })
+        if (res.status == 201) {
+            window.location.href = 'http://localhost:8080/#/';
         } else {
           res.json().then(data => {
             service.showError(data);

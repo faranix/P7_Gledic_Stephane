@@ -1,7 +1,10 @@
 <template>
   <div class="login">
     <div class="login__box">
-      <NavLogin title="Connexion" />
+      <NavLogin
+       title="Connexion"
+       :userId='userId'
+        />
 
       <div class="error-message"></div>
 
@@ -30,7 +33,7 @@ import NavLogin from "@/components/NavLogin.vue";
 import Copyright from "@/components/Copyright.vue";
 
 // Importer des functions
-const service = require('../service/service.js')
+//const service = require('../service/service.js')
 
 export default {
   name: "Login",
@@ -59,16 +62,14 @@ export default {
         body: JSON.stringify(user)
       })
       .then(res => {
-        if (res.status == 200) { 
+        if (res.ok) {
           res.json().then(data => {
-            sessionStorage.setItem('userToken', data.token);
-            // Passer a la prochaine page
-            window.location.href = "http://localhost:8080/#/home";
-          })
-        } else {
-          res.json().then(data => {
-            // Afficher un message d'erreur selon la donnée reçu
-            service.showError(data);
+            console.log(data);
+            // Stock les données de user dans le localstorage
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            window.location.href = `http://localhost:8080/#/home`
           })
         }
       })
