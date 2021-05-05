@@ -18,11 +18,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.copyright {
+  display: flex;
+  justify-content: center;
+}
 p {
-  color: #EFF8E2;
-  margin-left: 73px;
-  margin-top: 20px;
-  font-size: 30px;
+  color: #150E0E;
+  margin-top: 4%;
+  font-size: 2rem;
   font-weight: bold;
 }
 

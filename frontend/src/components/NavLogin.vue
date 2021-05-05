@@ -1,146 +1,62 @@
 <template>
   <div class="navlogin">
-    <div class="navlogin__header">
-      <h1 class="navlogin__header__title">{{ title }}</h1>
+    <div class="navlogin__logo">
+      <img src="@/assets/svg/icon.svg" alt="" id="logoRotate">
       <img
         src="@/assets/svg/icon-left-font-monochrome-white.svg"
         alt="Le logo de groupomania"
       />
-      <div class="nav">
-        <router-link class="router" id="router-1" to="/"
+    </div>
+      <div class="navlogin__nav">
+        <router-link class="navlogin__nav__router" id="router-1" to="/"
           >Connexion</router-link
         >
-        <router-link class="router" id="router-2" to="/inscription"
+        <router-link class="navlogin__nav__router" id="router-2" to="/inscription"
           >Inscription</router-link
         >
       </div>
-    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "NavLogin",
-  props: {
-    title: {
-      type: String,
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
-.navlogin {
-  &__header {
+  .navlogin {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    padding-top: 30px;
 
-    &__title {
-      color: #EFF8E2;
-      font-size: 55px;
-      margin: 60px 125px 0 109px;
-      font-weight: bold italic;
-    }
-  }
-}
-
-.nav {
-  margin-top: 80px;
-}
-
-img {
-  width: 376px;
-  margin-top: 30px;
-  color: blue;
-}
-
-.router {
-  text-decoration: none;
-  color: #EFF8E2;
-  font-size: 30px;
-  font-weight: bold;
-}
-
-.router {
-  &:hover {
-    color: #23022E;
-    transition: all 300ms;
-  }
-}
-
-#router-1 {
-  margin: 50px 0 0 61px;
-  padding-bottom: -20px;
-}
-
-#router-2 {
-  margin: 50px 84px 0 53px;
-}
-
-// Media Query
-@media screen and (max-width: 1350px) {
-
-  .navlogin__header {
-    margin-top: 2%;
-    &__title {
-      font-size: 40px;
-      margin: 60px 100px 0 70px;
-    }
-    
-  }
-
-  .router {
-    font-size: 20px;
-  }
-
-  img {
-    width: 200px;
-  }
-  
-}
-
-@media screen and (max-width: 900px) {
-  .navlogin__header {
-    margin-top: 0%;
-    justify-content: space-around;
-    &__title {
-      font-size: 30px;
-      margin: 60px 0px 0 0px;
-    }
-  }
-  #router-1 {
-    margin: 50px 0 0 0px;
-    padding-bottom: -20px;
-  }
-
-  #router-2 {
-    margin: 50px 0px 0 40px;
-  }
-  .router {
-    font-size: 18px;
-  }
-}
-
-@media screen and (max-width: 640px) {
-  .navlogin__header {
-    flex-direction: column;
-    &__title {
-      display: none;
-    }
-
-    .nav {
+    &__nav {
       display: flex;
-      justify-content: space-around;
-      width: 100%;
-      margin-top: 10px;
+      justify-content: space-between;
+      width: 300px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #150E0E;
+      font-weight: bold;
+      font-size: 1.5rem;
+
+      &:hover {
+        color: #573280;
+        text-decoration: underline #150E0E;
+        transition: color 300ms ease-in-out;
+      }
+    }
+
+    #logoRotate {
+      width: 80px;
+      margin-right: -50px;
+      margin-top: -50px;
+    }
+
+    img {
+      width: 60%;
     }
   }
-}
-
-@media screen and (max-width: 425px) {
-  .nav {
-    margin-top: 15px;
-  }
-}
 </style>
