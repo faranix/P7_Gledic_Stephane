@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 // Les Routes
 const userRouter = require('./routers/user');
 const postRouter = require('./routers/post');
+const commentaireRouter = require('./routers/commentaire');
 
 // Parser les requetes
 app.use(bodyParser.json());
@@ -21,5 +22,6 @@ app.use((req, res, next) => {
 
 app.use('/api', userRouter);
 app.use('/api/connect', postRouter);
+app.use('/api/commentaire', commentaireRouter);
 
 module.exports = app;

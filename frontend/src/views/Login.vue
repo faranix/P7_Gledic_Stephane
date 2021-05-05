@@ -1,9 +1,7 @@
 <template>
   <div class="login">
-    <div class="login__box">
       <NavLogin
        title="Connexion"
-       :userId='userId'
         />
 
       <div class="error-message"></div>
@@ -23,7 +21,6 @@
       </form>
 
       <Copyright />
-    </div>
   </div>
 </template>
 
@@ -82,152 +79,85 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.login {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  &__box {
-    height: 95vh;
-    width: 95vw;
-    border-radius: 100px;
-    background-color: #573280;
-    border-top: solid 5px #23022E;
-    border-bottom: solid 5px #23022E;
-    box-shadow: 0px 0px 5px black;
-  }
-}
-
-
-.form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 68%;
-
-  &__box {
-    display: flex;
-    flex-direction: column;
-    color: #EFF8E2;
-    margin: 20px;
-
-    label {
-      text-align: center;
-      font-size: 30px;
-      margin-bottom: 5px;
-    }
-
-    input {
-      width: 800px;
-      height: 50px;
-      padding: 0 10px;
-      background-color: #23022E;
-      color: #EFF8E2;
-      border: #EFF8E2 solid 1px;
-      font-size: 20px;
-      font-weight: bold;
-    }
-  }
-
-  // annimation du button
-  button {
-    position: relative;
-    background-color: #23022E;
-    padding: 20px 50px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 40px;
-    font-weight: bold italic;
-    overflow: hidden;
-
-     & span {
-      position: relative;
-      z-index: 2;
-      color: #EFF8E2;
-      transition: color 0.3s ease-in-out;
-    }
-    
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0px;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #EFF8E2;
-      transform: translateY(100%);
-      transition: transform 0.3s ease-in-out;
-    }
-
-    &:hover::after  {
-      transform: translateY(0%);
-    }
-
-    &:hover span {
-      color: #23022E;
-    }
-  }
-}
-
-// Media Query
-@media screen and (max-width: 900px) {
-  .form {
-    &__box {
-      label {
-        font-size: 20px;
-        margin-bottom: 10px;
-      }
-
-      input {
-        width: 600px;
-      }
-    }
-  }
-}
-
-@media screen and (max-width: 645px) {
-  .form {
-    &__box {
-      label {
-        font-size: 15px;
-        margin-bottom: 10px;
-      }
-
-      input {
-        width: 350px;
-      }
-    }
-
-    button {
-      font-size: 20px;
-    }
-  }
-
-}
-
-@media screen and (max-width: 425px) {
   .login {
-    &__box {
-      height: 100vh;
-      width: 100vw;
-      border-radius: 0px;
-      box-shadow: none;
-    }
-  }
-}
+    height: 100vh;
+    padding: 0 40px;
 
-@media screen and (max-width: 365px) {
-  .form {
-    &__box {
-      input {
-        width: 280px;
+    .form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 8% 20% 0 20%;
+      padding: 80px;
+      color: #150E0E;
+      border: solid 5px #150e0e;
+
+      &__box {
+        display: flex;
+        flex-direction: column;
+        
+        label {
+          text-align: center;
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+
+        input {
+          width: 500px;
+          height: 40px;
+          padding: 10px;
+          margin-bottom: 30px;
+          font-size: 1.2rem;
+          border: #150E0E solid 5px;
+
+          &:focus {
+            outline: none;
+            border: solid 5px #573280;
+          }
+        }
+      }
+
+      &:hover {
+        box-shadow: -10px 10px #573280;
+        transition: box-shadow 450ms ease-in-out;
+      }
+      
+    }
+
+        // annimation du button
+    button {
+      position: relative;
+      background-color: #150E0E;
+      padding: 20px 50px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.8rem;
+      font-weight: bold italic;
+      overflow: hidden;
+
+        & span {
+        position: relative;
+        z-index: 2;
+        color: #EFF8E2;
+        transition: color 0.3s ease-in-out;
+      }
+      
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #573280;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      &:hover::after  {
+        transform: translateY(0%);
       }
     }
   }
-}
-
 </style>

@@ -27,7 +27,7 @@ exports.createPost = (req, res, next) => {
  */
 exports.editPost = (req, res, next) => {   
     // Verifie que id du local storage et celui du token son identique.
-        db.query(`UPDATE post SET title="${req.body.title}", url="${req.body.url}" WHERE id=${req.body.postId} `, (err, result) => {
+        db.query(`UPDATE post SET title="${req.body.title}", url="${req.body.url}" WHERE id=${req.body.postId} LIMIT 1 `, (err, result) => {
             if (err) throw err;
 
             res.status(200).json('Post Modifier !');
@@ -42,10 +42,14 @@ exports.editPost = (req, res, next) => {
  */
 exports.deletePost = (req, res, next) => {
     console.log(req.body.id);
-    db.query(`DELETE FROM post WHERE id=${req.body.id} LIMIT 1`, (err, result) => {
+    db.query(`DELETE FROM commentaire WHERE post_id = ${req.body.id}`, (err, result) => {
         if (err) throw err;
         
-        res.status(200).json({ message: 'Post Supprimer !' });
+        db.query(`DELETE FROM post WHERE id = ${req.body.id}`, (err, result) => {
+            if (err) throw err;
+
+            res.status(200).json({ message: 'Post Supprimer !' });
+        })
     })
 }
 /**

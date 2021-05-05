@@ -118,7 +118,8 @@ export default {
   .home {
     display: flex;
     height: 100%;
-    background-color: #573280;
+    background-color: #f2f2f2;
+    color: #150E0E;
 
     &__left {
       position: fixed;
@@ -138,28 +139,22 @@ export default {
       padding: 20px 10% 20px 30%;
       width: 100%;
       height: 100%;
-      background-color: #573280;
 
       .nouvellepublication {
         padding: 20px;
         margin-bottom: 30px;
-        background-color: #23022E;
-        color: #EFF8E2;
         align-self: center;
         cursor: pointer;
+        font-weight: bold;
+        border: solid 5px #23022E;
+        border-radius: 3px;
+
+        &:hover {
+          background-color: #573280;
+          color: #f2f2f2;
+          transition: all 400ms ease-in-out;
+        }
       }
-    }
-  }
-
-  // Keyframe
-
-  @keyframes logoAnim {
-    0% {
-      transform: rotate(50%);
-    }
-
-    100% {
-      transform: rotate(100%);
     }
   }
 </style>

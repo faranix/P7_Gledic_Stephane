@@ -72,3 +72,26 @@ exports.userLogin = (req, res, next) => {
 exports.userConnected = (req, res, next) => {
         res.status(200).json({message: 'Données récupérer'});
 };
+
+/**
+ * Permet de supprimer le compte
+ */
+exports.deleteAccount = (req, res, next) => {
+    // Supprime tout les commentaires lié a cette utilisateur !
+    db.query(`DELETE FROM commentaire WHERE user_id=${req.body.userId}`, (err, result) => {
+        if (err) throw err;
+
+        // Supprime tout les posts lié a cette utilisateur !
+        db.query(`DELETE FROM post WHERE user_id=${req.body.userId}`, (err, result) => {
+            if (err) throw err;
+
+            // Supprime tout le profil de l'utilisateur !
+            db.query(`DELETE FROM user WHERE user.id=${req.body.userId}`, (err, result) => {
+                if (err) throw err;
+                
+                res.status(200).json({ message: 'Utilisateur supprimer !' });
+            })
+        })
+        
+    })
+};
