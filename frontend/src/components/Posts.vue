@@ -1,12 +1,12 @@
 <template>
     <div :v-model="posts" class="posts">
-        <div :id="post.id" :key="post.id" v-for="(post) in posts" class="post">
+        <div :id="post.id" :key="post.id" v-for="post in posts" class="post">
             <div class="post__box">
                 <div class="post__box__pseudo">
                     <p class="pseudo">{{ post.pseudo }}</p>
-                    <div v-if="userId === post.user_id || isAdmin === 1" class="post__box__pseudo__icon-menu">
-                        <i @click="openOverlay(post.id)" class="far fa-edit"></i>
-                        <i @click="deletePost(post.id)" class="far fa-trash-alt"></i>
+                    <div class="post__box__pseudo__icon-menu">
+                        <i v-if="userId === post.user_id" @click="openOverlay(post.id)" class="far fa-edit"></i>
+                        <i v-if="userId === post.user_id || isAdmin === 1" @click="deletePost(post.id)" class="far fa-trash-alt"></i>
                     </div>
                 </div>
                 <p class="post__box__titre">{{ post.title }}</p>
@@ -20,6 +20,7 @@
                 <div class="post__commentaire__content">
                     <Commentaire 
                         :postId="post.id"
+                        :postUserId="post.user_id"
                     />
                 </div>
                 <div class="commentaire__input">
@@ -125,8 +126,8 @@ export default {
         /**
          * Permet d'afficher tout les posts
          */
-        getPosts() {
-            fetch('http://localhost:3000/api/connect/getpost', {
+        async getPosts() {
+            await fetch('http://localhost:3000/api/connect/getpost', {
                 method: 'get',
                 headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`

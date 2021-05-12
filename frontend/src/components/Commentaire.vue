@@ -4,9 +4,9 @@
             <div v-if="commentaire.post_id == postId" class="commentaire">
                     <div class="commentaire__top">
                         <p class="commentaire__top__pseudo">{{ commentaire.pseudo }}</p>    
-                        <div v-if="commentaire.user_id == userId" class="commentaire__top__icon">
-                                <i @click="overlay = commentaire.id" class="far fa-edit commentaire-edit"></i>
-                                <i @click="deleteCommentaire(commentaire.id)" class="far fa-trash-alt"></i>
+                        <div class="commentaire__top__icon">
+                                <i v-if="commentaire.user_id == userId" @click="overlay = commentaire.id" class="far fa-edit commentaire-edit"></i>
+                                <i v-if="commentaire.user_id == userId || isAdmin == 1 || postUserId == userId" @click="deleteCommentaire(commentaire.id)" class="far fa-trash-alt"></i>
 
                                 <!-- Overlay -->
                                 <div v-if="overlay == commentaire.id" class="commentaire-edit__overlay">
@@ -44,15 +44,20 @@ export default {
             userId: JSON.parse(localStorage.getItem('user')).id,
             commentaires: [],
             overlay: undefined,
+            isAdmin: JSON.parse(localStorage.getItem('user', [1])).isAdmin
         }
     },
     props: {
         postId: {
             type: Number,
+        },
+        postUserId: {
+            type: Number
         }
     },
     mounted() {
         this.getCommentaires();
+        console.log(this.postId);
     },
     methods: {
         /**

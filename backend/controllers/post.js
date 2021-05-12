@@ -42,7 +42,7 @@ exports.editPost = (req, res, next) => {
  */
 exports.deletePost = (req, res, next) => {
     console.log(req.body.id);
-    db.query(`DELETE FROM commentaire WHERE post_id = ${req.body.id}`, (err, result) => {
+    db.query(`DELETE FROM commentaire WHERE post_id = ${req.body.id} LIMIT 1`, (err, result) => {
         if (err) throw err;
         
         db.query(`DELETE FROM post WHERE id = ${req.body.id}`, (err, result) => {
