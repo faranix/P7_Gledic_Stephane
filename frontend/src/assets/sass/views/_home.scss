@@ -1,0 +1,42 @@
+.home {
+    display: flex;
+    height: 100%;
+    background-color: #f2f2f2;
+    color: #150E0E;
+
+    &__left {
+      position: fixed;
+      &__img {
+        padding: 25px;
+        width: 290px;
+        height: 121px;
+        margin-bottom: -4px;
+        border-right: solid 1px #23022E;
+        border-bottom: solid 1px #23022E;
+      }
+    }
+
+    &__right {
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10% 20px 30%;
+      width: 100%;
+      height: 100%;
+
+      .nouvellepublication {
+        padding: 20px;
+        margin-bottom: 30px;
+        align-self: center;
+        cursor: pointer;
+        font-weight: bold;
+        border: solid 5px #23022E;
+        border-radius: 3px;
+
+        &:hover {
+          background-color: #573280;
+          color: #f2f2f2;
+          transition: all 400ms ease-in-out;
+        }
+      }
+    }
+  }

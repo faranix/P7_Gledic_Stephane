@@ -28,6 +28,7 @@
 import MenuHome from '@/components/MenuHome.vue';
 import Posts from '@/components/Posts.vue';
 import Overlay from '@/components/Overlay.vue';
+import FetchPost from '@/service/FetchPost.js';
 
 export default {
   name: 'Home',
@@ -40,47 +41,19 @@ export default {
       pseudo: 'pseudo',
       overlay: 0,
       postId: 1,
+      fetchpost: new FetchPost
     }
   },
   methods: {
     /**
-     * Creation d'un nouveau post
+     * Permet de crée un nouveau post
      */
     newPost() {
-      const form = document.querySelector('#formPublier');
-      const userId = JSON.parse(localStorage.getItem('user')).id
-      let post = [userId];
-
-      form.forEach(element => {
-        // Verifie que les champs son remplie
-        if (element.value == '') {
-          element = false;
-        }
-        JSON.stringify(post.push(element.value));
-      });
-
-      if (post[1] == undefined || post[2] == undefined) {
-        console.log('Veuillez remplir tout les champs !');
-      } else {
-        // Envoie des données au backend
-        fetch('http://localhost:3000/api/connect/createpost', {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify(post)
-        })
-        .then(res => {
-          res.json().then(() => {
-            this.overlay = 0;
-            window.location.reload();
-          })
-        })
-        .catch(error => {
-          console.log(error);
-        })
-      }
+      this.fetchpost.newPost();
+      this.overlay = 0;
+      
+      // permet d'utiliser la methods getPosts de l'enfants
+      this.$children[2].getPosts();
     },
 
     closeOverlay() {
@@ -110,51 +83,6 @@ export default {
         }
       })
       .catch(error => console.log(error));
-  }
+  },
 }
 </script>
-
-<style lang='scss' scoped>
-  .home {
-    display: flex;
-    height: 100%;
-    background-color: #f2f2f2;
-    color: #150E0E;
-
-    &__left {
-      position: fixed;
-      &__img {
-        padding: 25px;
-        width: 290px;
-        height: 121px;
-        margin-bottom: -4px;
-        border-right: solid 1px #23022E;
-        border-bottom: solid 1px #23022E;
-      }
-    }
-
-    &__right {
-      display: flex;
-      flex-direction: column;
-      padding: 20px 10% 20px 30%;
-      width: 100%;
-      height: 100%;
-
-      .nouvellepublication {
-        padding: 20px;
-        margin-bottom: 30px;
-        align-self: center;
-        cursor: pointer;
-        font-weight: bold;
-        border: solid 5px #23022E;
-        border-radius: 3px;
-
-        &:hover {
-          background-color: #573280;
-          color: #f2f2f2;
-          transition: all 400ms ease-in-out;
-        }
-      }
-    }
-  }
-</style>
