@@ -95,38 +95,38 @@ exports.deleteAccount = (req, res, next) => {
         // Supprime tout les posts lié a cette utilisateur !
         db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=${req.body.userId}`, (err, result) => {
             if (err) throw err;
-            
+
             result.forEach(element => {
-                db.query(`SELECT commentaire.* FROM post INNER JOIN commentaire ON post.id = post_id WHERE post.id=${element.id}`, (err, result) => {
-                    if (err) throw err;
-                    
+                db.query(`SELECT commentaire.* FROM post INNER JOIN commentaire ON post.id = post_id WHERE post_id=${element.id}`, (err, result) => {
+                    if (err) throw err;    
+
                     // Supprime tout les commentaires sur les posts de user
-                    result.forEach(element => {
-                        console.log(element.id);
-                        db.query(`DELETE FROM commentaire WHERE commentaire.id=${element.id}`, (err, result) => {
+                    if (result) {
+                        result.forEach(element => {
+                            db.query(`DELETE FROM commentaire WHERE commentaire.id=${element.id}`, (err, result) => {
+                                if (err) throw err;
+    
+                                console.log('Tout les commentaires sur les posts de user sont supprimer !');
+                            });
+                        });
+                    }
+                    
+                    // Supprime tout les posts de user
+                    db.query(`DELETE FROM post WHERE user_id=${req.body.userId}`, (err, result) => {
+                        if (err) throw err;
+                        
+                        console.log('Tout les posts de user sont supprimer !');
+                    
+                        // Supprime tout le profil de l'utilisateur !
+                        db.query(`DELETE FROM user WHERE user.id=${req.body.userId}`, (err, result) => {
                             if (err) throw err;
 
-                            console.log('Tout les commentaires sur les posts de user sont supprimer !');
+                            res.status(200).json({ message: 'Utilisateur supprimer !' });
 
-                            if (result) {
-                                // Supprime tout les posts de user
-                                 db.query(`DELETE FROM post WHERE user_id=${req.body.userId}`, (err, result) => {
-                                    if (err) throw err;
-                                    
-                                    console.log('Tout les posts de user sont supprimer !');
-                                    
-                                    // Supprime tout le profil de l'utilisateur !
-                                    db.query(`DELETE FROM user WHERE user.id=${req.body.userId}`, (err, result) => {
-                                        if (err) throw err;
-                                    });
-                                 });
-                            };
                         });
                     });
                 });
             });
         });
     });
-
-    res.status(200).json({ message: 'Utilisateur supprimer !' });
 };

@@ -28,43 +28,44 @@ export default class FetchPost {
      * Permet de modifier un post
      */
     editPost(postId) {
-        const form = document.querySelector('#formPublier');
-        let postData = [];
-        form.forEach(element => {
-            // Verifie que les champs son remplie
-            if (element.value == '') {
-                element = false;
-            }
-            postData.push(element.value);
-        });
-        
-        const sendData = {
-            postId: postId,
-            title: postData[0],
-            url: postData[1]
-        }
-
-        console.log(sendData);
-
-        if (postData[1] == undefined || postData[2] == undefined) {
-            console.log('Veuillez remplir tout les champs !');
-        } else {
-            fetch('http://localhost:3000/api/connect/editpost', {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify(sendData)
-            })
-            .then(res => {
-                res.json().then(data => {
-                    console.log(data);
-                    this.overlay = 0;
+        return new Promise((resolve) => {
+            const form = document.querySelector('#formPublier');
+    
+            let postData = [];
+            form.forEach(element => {
+                // Verifie que les champs son remplie
+                if (element.value == '') {
+                    element = false;
+                }
+                postData.push(element.value);
+            });
+            postData.pop();
+    
+            const sendData = {
+                postId: postId,
+                title: postData[0],
+                url: postData[1]
+            };
+    
+            if (postData[0] == undefined || postData[1] == undefined) {
+                console.log('Veuillez remplir tout les champs !');
+            } else {
+                fetch('http://localhost:3000/api/connect/editpost', {
+                    method: 'put',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(sendData)
                 })
-            })
-            .catch(error => console.log(error));
-        }
+                .then(res => {
+                    res.json().then(data => {
+                        resolve(data);
+                    })
+                })
+                .catch(error => console.log(error));
+            }
+        })
     }
 
 
@@ -105,5 +106,26 @@ export default class FetchPost {
                 console.log(error);
             })
         }
+    }
+
+    /**
+     * Permet de récuperer les posts
+     * @returns les posts
+     */
+    getPosts() {
+        return new Promise((resolve) => {
+            fetch('http://localhost:3000/api/connect/getpost', {
+                method: 'get',
+                headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then(res => {
+                res.json().then(data => {
+                    resolve(data);
+                })
+            })
+            .catch(error => console.log(error));
+        })
     }
 }

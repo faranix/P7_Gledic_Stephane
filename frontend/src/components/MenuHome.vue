@@ -20,7 +20,7 @@
 
 <script>
 // Service
-import FetchAccount from '@/service/FetchAccount.js';
+import AccountService from '@/service/AccountService.js';
 
 export default {
     name: 'NavHome',
@@ -28,7 +28,7 @@ export default {
         return {
             menuOpen: 1,
             deleteAccountOpen: 0,
-            fetchaccount: new FetchAccount
+            accountService: new AccountService
         }
     },
     props: {
@@ -42,14 +42,14 @@ export default {
          * Permet de ce deconnecter du compte
          */
         disconnect() {
-            this.fetchaccount.disconnect();
+            this.accountService.disconnect();
         },
 
         /**
          * Permet de supprimer le compte
          */
         deleteAccount() {
-            this.fetchaccount.deleteAccount();
+            this.accountService.deleteAccount();
         }
     }
 }

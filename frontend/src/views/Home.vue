@@ -28,7 +28,7 @@
 import MenuHome from '@/components/MenuHome.vue';
 import Posts from '@/components/Posts.vue';
 import Overlay from '@/components/Overlay.vue';
-import FetchPost from '@/service/FetchPost.js';
+import PostService from '@/service/PostService.js';
 
 export default {
   name: 'Home',
@@ -41,7 +41,7 @@ export default {
       pseudo: 'pseudo',
       overlay: 0,
       postId: 1,
-      fetchpost: new FetchPost
+      postService: new PostService
     }
   },
   methods: {
@@ -49,11 +49,17 @@ export default {
      * Permet de crée un nouveau post
      */
     newPost() {
-      this.fetchpost.newPost();
-      this.overlay = 0;
-      
-      // permet d'utiliser la methods getPosts de l'enfants
-      this.$children[2].getPosts();
+      let url = document.querySelector('#url').value;
+      const regex = '(?:jpg|gif|png)'
+
+      if (url.match(regex) == null) {
+        console.log('Url invalide');
+      } else {
+        this.postService.newPost();
+        this.overlay = 0;
+        // permet d'utiliser la methods getPosts de l'enfants
+        this.$children[2].getPosts();
+      }
     },
 
     closeOverlay() {

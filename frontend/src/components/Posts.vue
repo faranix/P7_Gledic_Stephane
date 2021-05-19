@@ -1,12 +1,12 @@
 <template>
-    <div :v-model="posts" class="posts">
-        <div :id="post.id" :key="post.id" v-for="post in posts" class="post">
+    <div class="posts">
+        <div :id="post.id" :key="post.id" v-for="(post, index) in posts" class="post">
             <div class="post__box">
                 <div class="post__box__pseudo">
                     <p class="pseudo">{{ post.pseudo }}</p>
                     <div class="post__box__pseudo__icon-menu">
                         <i v-if="userId === post.user_id" @click="openOverlay(post.id)" class="far fa-edit"></i>
-                        <i v-if="userId === post.user_id || isAdmin === 1" @click="deletePost(post.id)" class="far fa-trash-alt"></i>
+                        <i v-if="userId === post.user_id || isAdmin === 1" @click="deletePost(post.id, index)" class="far fa-trash-alt"></i>
                     </div>
                 </div>
                 <p class="post__box__titre">{{ post.title }}</p>
@@ -25,7 +25,7 @@
                 </div>
                 <div class="commentaire__input">
                     <form method="post">
-                        <input placeholder="Votre Commentaire" name="commentaire" :id="'commentaire'+ post.id"  type="text">
+                        <input @keypress.enter="postCommentaire(post.id)"  placeholder="Votre Commentaire" name="commentaire" :id="'commentaire'+ post.id"  type="text">
                         <button @click="postCommentaire(post.id)" type="button" id="commentaireBtn">V</button>
                     </form>
                 </div>
@@ -35,6 +35,7 @@
             <Overlay 
                 :formSend="editPost"
                 :postId='post.id'
+                :index="index"
                 :title='post.title'
                 :url='post.url'
                 nameBtn='Modifer'
@@ -52,8 +53,8 @@ import Overlay from '@/components/Overlay.vue';
 import Commentaire from '@/components/Commentaire.vue';
 
 // Service
-import FetchPost from '@/service/FetchPost.js';
-import FetchCommentaire from '@/service/FetchCommentaire.js';
+import PostService from '@/service/PostService.js';
+import CommentaireService from '@/service/CommentaireService.js';
 
 export default {
     name: 'Posts',
@@ -62,8 +63,8 @@ export default {
     },
     data() {
         return {
-            fetchPost: new FetchPost,
-            fetchCommentaire: new FetchCommentaire,
+            postService: new PostService,
+            commentaireService: new CommentaireService,
             posts: [],
             userId: undefined,
             isAdmin: undefined,
@@ -79,34 +80,45 @@ export default {
          * Permet de poster un commentaire
          */
         postCommentaire(id) {
-            this.fetchCommentaire.postCommentaire(id);
-
-            const post = [];
-            // Stock tout les enfants qui sont des divs !
-            this.$children.forEach(element => {
-                if (element.postId == id) {
-                    post.push(element);
-                }
+            this.commentaireService.postCommentaire(id).then(data => {
+                document.querySelector(`#commentaire${id}`).value = '';
+                this.$children.forEach(element => {
+                    element.commentaires = data;
+                });              
             });
-
-            post[0].getCommentaires();
         },
 
         /**
          * Permet de modifier un post
          */
-        editPost(postId) {
-            this.fetchPost.editPost(postId);
-            this.getPosts();
-            this.overlay = 0;
+        editPost(postId, index) {
+            let url = document.querySelector('#url').value;
+            const regex = '(?:jpg|gif|png)'
+
+            if (url.match(regex) == null) {
+                console.log('Url invalide');
+            } else {
+                this.postService.editPost(postId).then(data => {
+                    const newPost = {
+                        id: data[0].id,
+                        pseudo: 'Guillaume',
+                        title: data[0].title,
+                        url: data[0].url,
+                    };
+    
+                    this.posts.splice(index, 1, newPost);
+                    console.log(this.posts);
+                })
+                this.overlay = 0;
+            }
         },
 
         /**
          * Permet de supprimer un post
          */
-        deletePost(id) {
-            this.fetchPost.deletePost(id);
-            this.getPosts();
+        deletePost(id, index) {
+            this.postService.deletePost(id);
+            this.posts.splice(index, 1);
         },
 
         /**
@@ -126,24 +138,15 @@ export default {
         /**
          * Permet d'afficher tout les posts
          */
-        async getPosts() {
-            await fetch('http://localhost:3000/api/connect/getpost', {
-                method: 'get',
-                headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            })
-            .then(res => {
-                res.json().then(data => {
-                    // Stocker tout les posts dans un array mettre les plus récent en premier
-                    this.posts = data;
-                    this.posts.reverse();
+        getPosts() {
+            this.postService.getPosts().then(data => {
+                // Stocker tout les posts dans un array mettre les plus récent en premier
+                this.posts = data;
+                this.posts.reverse();
 
-                    this.isAdmin = JSON.parse(localStorage.getItem('user', [1])).isAdmin;
-                    this.userId = JSON.parse(localStorage.getItem('user', [1])).id;
-                })
+                this.isAdmin = JSON.parse(localStorage.getItem('user', [1])).isAdmin;
+                this.userId = JSON.parse(localStorage.getItem('user', [1])).id;
             })
-            .catch(error => console.log(error));
         }
     },
 }
