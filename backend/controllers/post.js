@@ -29,12 +29,16 @@ exports.editPost = (req, res, next) => {
     // Verifie que id du local storage et celui du token son identique.
         db.query(`UPDATE post SET title="${req.body.title}", url="${req.body.url}" WHERE id=${req.body.postId} LIMIT 1 `, (err, result) => {
             if (err) throw err;
+            
+            if (result) {
+                db.query(`SELECT post.*, user.pseudo FROM post INNER JOIN user ON user.id = user_id WHERE post.id=${req.body.postId}`, (err, result) => {
+                    if (err) throw err;
 
-            res.status(200).json('Post Modifier !');
+                    res.status(200).json(result);
+                });
+            }
         });
 }
-
-
 
 
 /**
@@ -60,5 +64,6 @@ exports.getPost = (req, res, next) => {
         if (err) throw err;
 
         res.status(200).json(result);
+
     })
 }

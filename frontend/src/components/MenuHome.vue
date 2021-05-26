@@ -1,7 +1,7 @@
 <template>
   <div class="navhome">
       <div v-if="menuOpen == 1" class="navhome__open">
-        <i @click="menuOpen = 0" class="fas fa-times"></i>
+        <i @click="menuOpen = 0" class="fas fa-times navhome__open__icon"></i>
         <div class="navhome__open__profile">
             <p class="navhome__open__profile__pseudo">{{ pseudo }}</p>
         </div>
@@ -19,12 +19,16 @@
 </template>
 
 <script>
+// Service
+import AccountService from '@/service/AccountService.js';
+
 export default {
     name: 'NavHome',
     data() {
         return {
-            menuOpen: 1,
+            menuOpen: 0,
             deleteAccountOpen: 0,
+            accountService: new AccountService
         }
     },
     props: {
@@ -38,157 +42,15 @@ export default {
          * Permet de ce deconnecter du compte
          */
         disconnect() {
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
-            window.location.href = 'http://localhost:8080/#/'
-            console.log('disconnect');
+            this.accountService.disconnect();
         },
 
         /**
          * Permet de supprimer le compte
          */
         deleteAccount() {
-            const userId = {
-                userId: JSON.parse(localStorage.getItem('user')).id
-            }
-
-            console.log(userId);
-
-            fetch('http://localhost:3000/api/deleteaccount', {
-                method: 'delete',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify(userId)
-            })
-            .then(res => {
-                res.json().then(data => {
-                    this.disconnect();
-                    console.log(data);
-                })
-            })
-            .catch(error => console.log(error))
+            this.accountService.deleteAccount();
         }
     }
 }
 </script>
-
-<style lang='scss' scoped>
-    .navhome__open {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        align-items: center;
-        background-color: #573280;
-        height: 700px;
-        padding-bottom: 20px;
-
-        &__profile {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 80px;
-            left: 20%;
-            background-color: #573280;
-            width: 150px;
-            height: 150px;
-            border-radius: 100%;
-            border: solid 5px #23022E;
-
-            &__pseudo {
-                font-size: 20px;
-                color: #EFF8E2;
-            }
-        }
-
-        i {
-            position: absolute;
-            right: 10%;
-            top: 5%;
-            font-size: 30px;
-            color: #EFF8E2;
-            cursor: pointer;
-
-            &:hover {
-                color: #150E0E;
-                transition: color 200ms ease-in-out;
-            }
-        }
-
-        &__paragraphe {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #EFF8E2;
-            margin-top: 5px;
-
-            &__text {
-                cursor: pointer;
-
-                &:hover {
-                    color: #23022E;
-                    transition: all 200ms;
-                }
-            }
-
-
-            &__box {
-                display: flex;
-                justify-content: center; 
-                margin: 10px 0px;
-
-                &__btn {
-                    padding: 5px 10px;
-                    cursor: pointer;
-                    margin: 0 15px;
-                    border: solid 2px #23022E;
-                    border-radius: 2px;
-                    font-weight: bold;
-
-                    &:hover {
-                        color: #f2f2f2;
-                        background-color: #563280;
-                        transition: all 200ms ease-in-out;
-                    }
-
-                }         
-            }
-        }
-
-        &:hover {
-            background-color: #563280ef;
-            transition: all 200ms ease-out;
-        }
-    }
-
-    .navhome__close {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        margin-left: -50px;
-        margin-top: 100%;
-        background: #573280;
-        border-radius: 50%;
-        color: #150E0E;
-
-
-        .fa-arrow-right {
-            font-size: 1.4rem;
-            position: absolute;
-            right: 20%;
-            top: 40%;
-        }
-
-        &:hover {
-            margin-left: -45px;
-            color: #f2f2f2;
-            cursor: pointer;
-            transition: all 300ms ease-in;
-        }
-    }
-</style>

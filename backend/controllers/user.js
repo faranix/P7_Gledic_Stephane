@@ -9,10 +9,10 @@ const db = require('../service/db');
 exports.userSingup = (req, res, next) => {
     // Stock les données rentré par utilisateur !
     const user = req.body;
-    console.log(user);
+
     // Avoir la longeur de l'objet (La verification des champs ce fait dans le frontend).
     const userLength = Object.keys(user).length;
-    console.log(userLength);
+
     // Verifie que tout les champs sont bien remplie !
     if (userLength === 3) {
         // On crypte le mot de passe 10 fois
@@ -37,32 +37,41 @@ exports.userSingup = (req, res, next) => {
 exports.userLogin = (req, res, next) => {
     db.query(`SELECT * FROM user WHERE email = "${req.body.email}"`, (err, result) => {
         if(err) throw err;
-
-        const userData = result[0];
-            
-        if (userData != null) {
-            // Comparer le mot de passe de la requete et celui de la base de données
-            bcrypt.compare(req.body.password, userData.password)
-                .then(valid => {
-                    if (!valid) {
-                        console.log('Mot de passe incorrect !');
-                        return res.status(400).json({message: 'Mot de passe incorrect !'});
-                    }
-                    console.log('Utilisateur connecter !');
-                    return res.status(200).json({
-                        user: userData,
-                        // Creation du token
-                        token: jwt.sign(
-                            {userId: userData.id},
-                            `${process.env.KEYTOKEN}`,
-                            { expiresIn: '24h' }
-                        )
-                    });
-                })
-                .catch(error => res.status(400).json({ error }));
+        
+        if (req.body.email == '' || result.length == 0) {
+            console.log('Email Incorrect !');
+            res.status(400).json({ message: 'Email Incorrect !' });
         } else {
-            res.status(400).json({message: 'Email incorrect !'});
+            const userData = {
+                id: result[0].id,
+                pseudo: result[0].pseudo,
+                isAdmin: result[0].isAdmin
+            };
+            console.log(userData);
+            if (userData != undefined) {
+                // Comparer le mot de passe de la requete et celui de la base de données
+                bcrypt.compare(req.body.password, result[0].password)
+                    .then(valid => {
+                        if (!valid) {
+                            console.log('Mot de passe incorrect !');
+                            return res.status(400).json({message: 'Mot de passe incorrect !'});
+                        }
+                        console.log('Utilisateur connecter !');
+                        return res.status(200).json({
+                            // A modifier
+                            user: userData,
+                            // Creation du token
+                            token: jwt.sign(
+                                {userId: userData.id},
+                                `${process.env.KEYTOKEN}`,
+                                { expiresIn: '24h' }
+                            )
+                        });
+                    })
+                    .catch(error => res.status(400).json({ error }));
+            } 
         }
+
     });
 };
 
@@ -81,17 +90,43 @@ exports.deleteAccount = (req, res, next) => {
     db.query(`DELETE FROM commentaire WHERE user_id=${req.body.userId}`, (err, result) => {
         if (err) throw err;
 
+        console.log('Tout les commentaires de user sont supprimer !');
+
         // Supprime tout les posts lié a cette utilisateur !
-        db.query(`DELETE FROM post WHERE user_id=${req.body.userId}`, (err, result) => {
+        db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=${req.body.userId}`, (err, result) => {
             if (err) throw err;
 
-            // Supprime tout le profil de l'utilisateur !
-            db.query(`DELETE FROM user WHERE user.id=${req.body.userId}`, (err, result) => {
-                if (err) throw err;
-                
-                res.status(200).json({ message: 'Utilisateur supprimer !' });
-            })
-        })
-        
-    })
+            result.forEach(element => {
+                db.query(`SELECT commentaire.* FROM post INNER JOIN commentaire ON post.id = post_id WHERE post_id=${element.id}`, (err, result) => {
+                    if (err) throw err;    
+
+                    // Supprime tout les commentaires sur les posts de user
+                    if (result) {
+                        result.forEach(element => {
+                            db.query(`DELETE FROM commentaire WHERE commentaire.id=${element.id}`, (err, result) => {
+                                if (err) throw err;
+    
+                                console.log('Tout les commentaires sur les posts de user sont supprimer !');
+                            });
+                        });
+                    }
+                    
+                    // Supprime tout les posts de user
+                    db.query(`DELETE FROM post WHERE user_id=${req.body.userId}`, (err, result) => {
+                        if (err) throw err;
+                        
+                        console.log('Tout les posts de user sont supprimer !');
+                    
+                        // Supprime tout le profil de l'utilisateur !
+                        db.query(`DELETE FROM user WHERE user.id=${req.body.userId}`, (err, result) => {
+                            if (err) throw err;
+
+                            res.status(200).json({ message: 'Utilisateur supprimer !' });
+
+                        });
+                    });
+                });
+            });
+        });
+    });
 };

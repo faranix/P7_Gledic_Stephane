@@ -1,0 +1,93 @@
+.navlogin {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 30px;
+
+    &__nav {
+      display: flex;
+      justify-content: space-between;
+      width: 300px;
+    }
+
+    a {
+      text-decoration: none;
+      color: #150E0E;
+      font-weight: bold;
+      font-size: 1.5rem;
+
+      &:hover {
+        color: #573280;
+        text-decoration: underline #150E0E;
+        transition: color 300ms ease-in-out;
+      }
+    }
+
+    #logoRotate {
+      width: 80px;
+      margin-right: -50px;
+      margin-top: -50px;
+    }
+
+    img {
+      width: 60%;
+    }
+}
+
+// ===== MEDIA QUERY ===== //
+
+@media screen and (max-width: 750px) {
+  .navlogin {
+    flex-direction: column;
+    align-items: center;
+
+    &__logo {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #logoRotate {
+      margin-right: -70px;
+    }
+
+    &__nav {
+      width: 100%;
+    }
+
+    a {
+      text-align: center;
+      width: 100%;
+      border-bottom: solid 5px;
+      padding-bottom: 10px;
+      font-size: 1.2rem;
+      margin-top: 20px;
+
+
+      &:hover {
+        text-decoration: none;
+        border-bottom: solid 5px #573280;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 525px) {
+  .navlogin {
+    img {
+      width: 50%;
+    }
+
+    #logoRotate {
+      width: 15%;
+      margin-right: -40px;
+    }
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .navlogin {
+    a {
+      font-size: 1rem;
+    }
+  }
+}
