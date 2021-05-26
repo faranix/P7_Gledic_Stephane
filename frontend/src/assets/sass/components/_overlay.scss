@@ -59,6 +59,13 @@
                 }
             }
 
+            .error-message {
+                font-size: 1.2rem;
+                text-align: center;
+                margin-bottom: 10px;
+                margin-top: -20px;
+            }
+
             button {
                 position: relative;
                 padding: 10px;
@@ -97,5 +104,43 @@
 
     button {
         cursor: pointer;
+    }
+}
+
+// MEDIA QUERY // 
+
+@media screen and (max-width: 768px) {
+    .overlay__box {
+        width: 90vw;
+        #formPublier {
+            width: 80%;
+            label {
+                font-size: 1.1rem;
+            }
+
+            input {
+                font-size: 1rem;
+            }
+
+            button {
+                font-size: 1rem;
+            }
+        }
+
+        .closeOverlay {
+            font-size: 1.5rem;
+            top: 5%;
+            right: 5%;
+        }
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .overlay__box {
+        #formPublier {
+            input {
+                font-size: 0.8rem;
+            }
+        }
     }
 }

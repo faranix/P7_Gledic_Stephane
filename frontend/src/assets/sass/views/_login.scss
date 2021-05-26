@@ -83,6 +83,12 @@
         transform: translateY(0%);
       }
     }
+
+    .error-message {
+      font-weight: bold;
+      font-weight: 1.2rem;
+      padding-bottom: 10px;
+    }
 }
 
 
@@ -96,6 +102,29 @@
     }
   }
 };
+
+@media screen and (max-width: 768px) {
+  .login {
+    .form {
+      .form__box {
+        label {
+          font-size: 1.2rem;
+        }
+
+        input {
+          font-size: 1.2rem;
+          height: 35px;
+        }
+      }
+      
+      button {
+        font-size: 1.2rem;
+        padding: 15px 45px;
+      }
+    }
+  }
+}
+
 
 @media screen and (max-width: 750px) {
   .login {
@@ -145,6 +174,10 @@
           width: 350px;
         }
       }
+    }
+
+    .error-message {
+      font-size: 0.8rem;
     }
   }
 }

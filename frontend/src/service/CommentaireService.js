@@ -68,26 +68,28 @@ export default class CommentaireFetch {
      * @param {*} id 
      */
     editCommentaire(id) {
-        const content = document.querySelector(`#commentaire-edit${id}`).value;
-
-        const data = {
-            id: id,
-            content: content
-        };
-        fetch('http://localhost:3000/api/commentaire/put', {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(data)
-        })
-        .then(res => {
-            res.json().then(() => {
-                console.log('Commentaire modifier !');
+        return new Promise((resolve, reject) => {
+            const content = document.querySelector(`#commentaire-edit${id}`).value;
+    
+            const data = {
+                id: id,
+                content: content
+            };
+            fetch('http://localhost:3000/api/commentaire/put', {
+                method: 'put',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(data)
             })
+            .then(res => {
+                res.json().then(data => {
+                    resolve(data);
+                })
+            })
+            .catch(() => reject(console.log('Erreur de modification du commentaire')));  
         })
-        .catch(() => console.log('Erreur de modification du commentaire'));
     }
 
     /**

@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="home__left">
-      <img class="home__left__img" src="@/assets/svg/icon-left-font-monochrome-white.svg" alt="">
+      <img class="home__left__img" src="@/assets/svg/icon-left-font-monochrome-black.svg" alt="">
       <MenuHome 
         :pseudo='pseudo'
       />
@@ -14,6 +14,7 @@
         nameBtn='Envoyer'
         :overlay='overlay'
         :closeOverlay='closeOverlay'
+        :errorMessage='errorMessage'
       />
 
       <div @click="overlay = 1" class="nouvellepublication">Que souhaitez vous publiez ?</div>
@@ -41,6 +42,7 @@ export default {
       pseudo: 'pseudo',
       overlay: 0,
       postId: 1,
+      errorMessage: undefined,
       postService: new PostService
     }
   },
@@ -53,7 +55,7 @@ export default {
       const regex = '(?:jpg|gif|png)'
 
       if (url.match(regex) == null) {
-        console.log('Url invalide');
+        this.errorMessage = 'Url invalide !';
       } else {
         this.postService.newPost();
         this.overlay = 0;

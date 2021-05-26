@@ -42,6 +42,18 @@
       margin-top: -5%;
     }
   }
+
+  @media screen and (max-width: 425px) {
+    p {
+      margin-top: -50px;
+    }
+  }
+
+  @media screen and (max-width: 375px) {
+    p {
+      margin-top: -70px;
+    }
+  }
   
   @media screen and (max-width: 325px) {
     p {

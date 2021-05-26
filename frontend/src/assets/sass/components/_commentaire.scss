@@ -96,5 +96,37 @@
             }
         }
     }
+}
 
+// MEDIA QUERY // 
+
+@media screen and (max-width: 768px) {
+    .commentaire__top {
+        &__pseudo {
+            font-size: 0.8rem;
+        }
+        
+        i {
+            font-size: 0.65rem;
+        }
+    }
+    
+    .commentaire__content {
+        font-size: 0.6rem;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .commentaire {
+
+        .commentaire__top__pseudo {
+            padding-top: 25px;
+        }
+
+        .commentaire__content {
+            overflow-wrap: break-word;
+            overflow: scroll;
+            padding-top: 30px;
+        }
+    }
 }

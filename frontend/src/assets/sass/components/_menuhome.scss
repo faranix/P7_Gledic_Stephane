@@ -5,7 +5,8 @@
     justify-content: flex-end;
     align-items: center;
     background-color: #573280;
-    height: 700px;
+    height: 80vh;
+    width: 50%;
     padding-bottom: 20px;
 
     &__profile {
@@ -93,8 +94,8 @@
     position: relative;
     width: 100px;
     height: 100px;
-    margin-left: -50px;
-    margin-top: 100%;
+    margin-left: -55px;
+    margin-top: 50%;
     background: #573280;
     border-radius: 50%;
     color: #150E0E;
@@ -112,5 +113,85 @@
         color: #f2f2f2;
         cursor: pointer;
         transition: all 300ms ease-in;
+    }
+}
+
+// MEDIA QUERY // 
+
+@media screen and (max-width: 930px) {
+    .navhome__open {
+        width: 40%;
+
+        &__profile {
+            left: 20%;
+            width: 120px;
+            height: 120px;
+        }
+
+        &__icon {
+            font-size: 1.5rem;
+        }
+
+        &__paragraphe__text {
+            font-size: 1.2rem;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .navhome {
+        position: absolute;
+        top: 0;
+        right: 0;
+        &__open {
+            justify-content: space-around;
+            height: 100vh;
+            width: 100vw;
+            z-index: 10;
+
+            &__profile {
+                position: initial;
+                width: 200px;
+                height: 200px;
+            }
+
+            &__paragraphe__text {
+                margin-bottom: 20px;
+            }
+
+            .navhome__open__paragraphe__box {
+                margin-top: 0;
+            }
+
+            &:hover {
+                background-color: #573280;
+            }
+        }
+
+        &__close {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            width: 50px;
+            margin: 0;
+            border-radius: 0px;
+            border-bottom-right-radius: 3px;
+            transform: rotate(90deg);
+
+            .fa-arrow-right {
+                position: initial;
+            }
+
+            &:hover {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .navhome__close {
+        margin-top: -15%;
     }
 }

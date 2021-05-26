@@ -5,8 +5,8 @@
                 <div class="post__box__pseudo">
                     <p class="pseudo">{{ post.pseudo }}</p>
                     <div class="post__box__pseudo__icon-menu">
-                        <i v-if="userId === post.user_id" @click="openOverlay(post.id)" class="far fa-edit"></i>
-                        <i v-if="userId === post.user_id || isAdmin === 1" @click="deletePost(post.id, index)" class="far fa-trash-alt"></i>
+                        <i v-if="post.user_id === userId" @click="openOverlay(post.id)" class="far fa-edit"></i>
+                        <i v-if="post.user_id === userId || isAdmin === 1" @click="deletePost(post.id, index)" class="far fa-trash-alt"></i>
                     </div>
                 </div>
                 <p class="post__box__titre">{{ post.title }}</p>
@@ -24,8 +24,8 @@
                     />
                 </div>
                 <div class="commentaire__input">
-                    <form method="post">
-                        <input @keypress.enter="postCommentaire(post.id)"  placeholder="Votre Commentaire" name="commentaire" :id="'commentaire'+ post.id"  type="text">
+                    <form @submit.prevent method="post">
+                        <input @keypress.enter="postCommentaire(post.id)" placeholder="Votre Commentaire" name="commentaire" :id="'commentaire'+ post.id"  type="text">
                         <button @click="postCommentaire(post.id)" type="button" id="commentaireBtn">V</button>
                     </form>
                 </div>
@@ -41,6 +41,7 @@
                 nameBtn='Modifer'
                 :overlay='overlay'
                 :closeOverlay='closeOverlay'
+                :errorMessage='errorMessage'
             />
         </div>
     </div>
@@ -69,6 +70,7 @@ export default {
             userId: undefined,
             isAdmin: undefined,
             overlay: 0,
+            errorMessage: undefined,
 
         }
     },
@@ -91,26 +93,21 @@ export default {
         /**
          * Permet de modifier un post
          */
-        editPost(postId, index) {
+        editPost(postId) {
             let url = document.querySelector('#url').value;
-            const regex = '(?:jpg|gif|png)'
+            // Pour avoir une url avec une extention a la fin.
+            const regex = '(?:jpg|gif|png|jpeg)'
 
             if (url.match(regex) == null) {
-                console.log('Url invalide');
+                this.errorMessage = 'Url invalide !';
             } else {
-                this.postService.editPost(postId).then(data => {
-                    const newPost = {
-                        id: data[0].id,
-                        pseudo: 'Guillaume',
-                        title: data[0].title,
-                        url: data[0].url,
-                    };
-    
-                    this.posts.splice(index, 1, newPost);
-                    console.log(this.posts);
+                this.postService.editPost(postId).then(() => {
+                    this.getPosts();
+                    this.overlay = 0;
                 })
-                this.overlay = 0;
             }
+
+            
         },
 
         /**
@@ -132,7 +129,7 @@ export default {
          * Permet de fermer l'overlay
          */
         closeOverlay() {
-            this.overlay = 0
+            this.overlay = 0;
         },
 
         /**

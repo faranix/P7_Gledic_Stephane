@@ -5,16 +5,16 @@
                     <div class="commentaire__top">
                         <p class="commentaire__top__pseudo">{{ commentaire.pseudo }}</p>    
                         <div class="commentaire__top__icon">
-                                <i v-if="commentaire.user_id == userId" @click="overlay = commentaire.id" class="far fa-edit commentaire-edit"></i>
+                                <i v-if="commentaire.user_id == userId" @click="openOverlay(commentaire.id, index)" class="far fa-edit commentaire-edit"></i>
                                 <i v-if="commentaire.user_id == userId || isAdmin == 1 || postUserId == userId" @click="deleteCommentaire(commentaire.id, index)" class="far fa-trash-alt"></i>
 
                                 <!-- Overlay -->
-                                <div v-if="overlay == commentaire.id" class="commentaire-edit__overlay">
+                                <div v-show="overlay == commentaire.id" class="commentaire-edit__overlay">
                                     <div class="commentaire-edit__overlay__box">
-                                        <i @click="overlay = -1" class="commentaire-edit__overlay__box__close fas fa-times"></i>
+                                        <i @click="overlay = - 1" class="commentaire-edit__overlay__box__close fas fa-times"></i>
                                         <div class="commentaire-edit__overlay__box__input">
-                                            <form method="post">
-                                                <input name="commentaire-edit" :id="'commentaire-edit'+ commentaire.id" v-model="commentaire.content" type="text">
+                                            <form @submit.prevent method="post">
+                                                <input @keypress.enter="editCommentaire(commentaire.id, index) " name="commentaire-edit" :id="'commentaire-edit' + commentaire.id" type="text">
                                                 <button @click="editCommentaire(commentaire.id, index)" type="button" id="commentaire-edit-Btn">V</button>
                                             </form>
                                         </div>
@@ -62,8 +62,20 @@ export default {
         /**
          * Permet de modifier un commentaire
          */
-        editCommentaire(id) {
-            this.commentaireService.editCommentaire(id);
+        editCommentaire(id, index) {
+
+            this.commentaireService.editCommentaire(id)
+                .then(data => {
+                    const editPost = {
+                        content: data[0].content,
+                        id: data[0].id,
+                        post_id: data[0].post_id,
+                        pseudo: data[0].pseudo,
+                        user_id: data[0].user_id
+                    }
+
+                    this.commentaires.splice(index, 1, editPost);
+                })
             this.overlay = 0;
         },
 
@@ -82,6 +94,14 @@ export default {
             this.commentaireService.getCommentaire().then(data => {
                 this.commentaires = data;
             })
+        },
+
+        /**
+         * Permet d'ouvir l'overlay du commentaire a édité
+         */
+        openOverlay(id, index) {
+            this.overlay = id;
+            document.querySelector('#commentaire-edit' + id).value = this.commentaires[index].content;
         }
     },
 }

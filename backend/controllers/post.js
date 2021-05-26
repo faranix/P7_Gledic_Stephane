@@ -31,7 +31,7 @@ exports.editPost = (req, res, next) => {
             if (err) throw err;
             
             if (result) {
-                db.query(`SELECT * FROM post WHERE id=${req.body.postId}`, (err, result) => {
+                db.query(`SELECT post.*, user.pseudo FROM post INNER JOIN user ON user.id = user_id WHERE post.id=${req.body.postId}`, (err, result) => {
                     if (err) throw err;
 
                     res.status(200).json(result);
@@ -46,7 +46,7 @@ exports.editPost = (req, res, next) => {
  */
 exports.deletePost = (req, res, next) => {
     console.log(req.body.id);
-    db.query(`DELETE FROM commentaire WHERE post_id = ${req.body.id} LIMIT 1`, (err, result) => {
+    db.query(`DELETE FROM commentaire WHERE post_id = ${req.body.id}`, (err, result) => {
         if (err) throw err;
         
         db.query(`DELETE FROM post WHERE id = ${req.body.id}`, (err, result) => {
@@ -60,8 +60,6 @@ exports.deletePost = (req, res, next) => {
  * Afficher un post
  */
 exports.getPost = (req, res, next) => {
-    let data = [];
-
     db.query(`SELECT post.*, user.pseudo FROM post INNER JOIN user ON user_id = user.id`, (err, result) => {
         if (err) throw err;
 

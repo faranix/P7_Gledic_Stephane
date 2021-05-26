@@ -8,6 +8,7 @@
                 <input type="text" name="titre" id="titre" v-model="titre" placeholder="Entrée un titre" required>
                 <label for="url">url</label>
                 <input type="url" name="url" id="url" v-model="image" placeholder="Entrée une url" required>
+                <p class="error-message">{{ errorMessage }}</p>
                 <button @click="formSend(postId, index)" type="button" value="Publier"><span>{{ nameBtn }}</span></button>
             </form>
         </div>
@@ -20,7 +21,7 @@ export default {
     data() {
         return {
             image: this.url,
-            titre: this.title
+            titre: this.title,
         }
     },
     props: {
@@ -51,6 +52,9 @@ export default {
         },
         index: {
             type: Number,
+        }, 
+        errorMessage: {
+            type: String,
         }
     },
 }

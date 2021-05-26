@@ -46,6 +46,10 @@ exports.editCommentaire = (req, res, next) => {
     db.query(`UPDATE commentaire SET content="${req.body.content}" WHERE id=${req.body.id} LIMIT 1`, (err, result) => {
         if (err) throw err;
 
-        res.status(200).json({ message: 'Commentaire Modifier !' });
-    })
+        db.query(`SELECT commentaire.*, user.pseudo FROM commentaire INNER JOIN user ON user_id = user.id WHERE commentaire.id=${req.body.id}`, (err, result) => {
+            if (err) throw err;
+
+            res.status(200).json(result);
+        })
+    });
 };

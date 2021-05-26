@@ -26,7 +26,7 @@ export default {
     name: 'NavHome',
     data() {
         return {
-            menuOpen: 1,
+            menuOpen: 0,
             deleteAccountOpen: 0,
             accountService: new AccountService
         }

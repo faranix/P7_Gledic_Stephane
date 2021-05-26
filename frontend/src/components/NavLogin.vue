@@ -3,7 +3,7 @@
     <div class="navlogin__logo">
       <img src="@/assets/svg/icon.svg" alt="" id="logoRotate">
       <img
-        src="@/assets/svg/icon-left-font-monochrome-white.svg"
+        src="@/assets/svg/icon-name.svg"
         alt="Le logo de groupomania"
       />
     </div>

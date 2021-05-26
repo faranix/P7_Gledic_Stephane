@@ -4,20 +4,20 @@
       <NavLogin title="Inscription" />
 
 
-      <form class="form" method="post" action="">
+      <form class="form" method="post">
         <div class="form__box">
           <label for="pseudo">Pseudo</label>
-          <input type="text" name="pseudo" id="pseudo" />
+          <input type="text" name="pseudo" id="pseudo" required />
         </div>
         <div class="form__box">
           <label for="email">Email</label>
-          <input type="email" name="email" id="email" />
+          <input type="email" name="email" id="email" required />
         </div>
         <div class="form__box">
           <label for="password">Mot de passe</label>
-          <input type="password" name="password" id="password" />
+          <input type="password" name="password" id="password" required />
         </div>
-        <div class="error-message"></div>
+        <div class="error-message">{{ errorMessage }}</div>
         <button @click="createUser()" type="button">
           <span>V</span>
         </button>
@@ -32,13 +32,15 @@
 import NavLogin from "@/components/NavLogin.vue";
 import Copyright from "@/components/Copyright.vue";
 
-// Importer des functions
-const service = require('../service/service.js');
-
 export default {
   name: "Singup",
   components: {
     NavLogin, Copyright
+  },
+  data() {
+    return {
+      errorMessage: undefined,
+    }
   },
   methods: {
     /**
@@ -75,7 +77,7 @@ export default {
             window.location.href = 'http://localhost:8080/#/';
         } else {
           res.json().then(data => {
-            service.showError(data);
+            this.errorMessage = data.message;
           })
         }
       })

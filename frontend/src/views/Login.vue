@@ -8,13 +8,13 @@
       <form class="form" method="post">
         <div class="form__box">
           <label for="email">Email</label>
-          <input type="email" name="email" id="email" />
+          <input type="email" name="email" id="email" required />
         </div>
         <div class="form__box">
           <label for="password">Mot de passe</label>
-          <input type="password" name="password" id="password" />
+          <input type="password" name="password" id="password" required />
         </div>
-        <div class="error-message"></div>
+        <div class="error-message">{{ errorMessage }}</div>
         <button @click="loginUser()" type="button">
           <span>V</span>
         </button>
@@ -29,14 +29,16 @@
 import NavLogin from "@/components/NavLogin.vue";
 import Copyright from "@/components/Copyright.vue";
 
-// Importer des functions
-const service = require('../service/service.js');
-
 export default {
   name: "Login",
   components: {
     NavLogin,
     Copyright,
+  },
+  data() {
+    return {
+      errorMessage: undefined,
+    }
   },
   methods: {
     /**
@@ -70,7 +72,8 @@ export default {
           })
         } else {
           res.json().then(data => {
-            service.showError(data)
+            console.log(data);
+            this.errorMessage = data.message
           })
         }
       })
