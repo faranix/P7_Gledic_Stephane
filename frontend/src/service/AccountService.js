@@ -1,4 +1,4 @@
-export default class FetchAccount {
+export default class AccountService {
     /**
      * Permet de supprimer le compte
      */

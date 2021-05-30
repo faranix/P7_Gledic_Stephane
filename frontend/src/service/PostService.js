@@ -1,4 +1,4 @@
-export default class FetchPost {
+export default class PostService {
 
     /**
      * Permet de supprimer un post
@@ -113,7 +113,7 @@ export default class FetchPost {
      * @returns les posts
      */
     getPosts() {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             fetch('http://localhost:3000/api/connect/getpost', {
                 method: 'get',
                 headers: {
@@ -125,7 +125,7 @@ export default class FetchPost {
                     resolve(data);
                 })
             })
-            .catch(error => console.log(error));
+            .catch(() => reject());
         })
     }
 }

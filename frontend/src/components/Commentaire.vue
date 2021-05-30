@@ -57,6 +57,7 @@ export default {
     },
     mounted() {
         this.getCommentaires();
+
     },
     methods: {
         /**

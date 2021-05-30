@@ -5,7 +5,7 @@
         />
 
 
-      <form class="form" method="post">
+      <form @keypress.enter='loginUser()' class="form" method="post">
         <div class="form__box">
           <label for="email">Email</label>
           <input type="email" name="email" id="email" required />

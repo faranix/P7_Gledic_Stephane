@@ -1,4 +1,4 @@
-export default class CommentaireFetch {
+export default class CommentaireService {
 
     /**
      * Permet de poster un commentaire
