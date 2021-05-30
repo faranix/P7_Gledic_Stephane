@@ -2,8 +2,8 @@
     <!-- Overlay pour crée un nouveau post -->
     <div v-if="overlay == postId" class="overlay">
         <div class="overlay__box">
-            <i @click="closeOverlay()" class="closeOverlay fas fa-times"></i>
-            <form id="formPublier" action="" method="post">
+            <i @click="closeOverlay() ,resetMessage()" class="closeOverlay fas fa-times"></i>
+            <form @keypress.enter="formSend(postId, index)" id="formPublier" action="" method="post">
                 <label for="titre">Titre</label>
                 <input type="text" name="titre" id="titre" v-model="titre" placeholder="Entrée un titre" required>
                 <label for="url">url</label>
@@ -57,5 +57,10 @@ export default {
             type: String,
         }
     },
+    methods: {
+        resetMessage() {
+            this.$parent.errorMessage = undefined
+        }
+    }
 }
 </script>

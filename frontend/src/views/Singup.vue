@@ -4,7 +4,7 @@
       <NavLogin title="Inscription" />
 
 
-      <form class="form" method="post">
+      <form @keypress.enter="createUser()" class="form" method="post">
         <div class="form__box">
           <label for="pseudo">Pseudo</label>
           <input type="text" name="pseudo" id="pseudo" required />

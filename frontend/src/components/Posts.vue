@@ -1,5 +1,6 @@
 <template>
     <div class="posts">
+        <p>{{ errorPost }}</p>
         <div :id="post.id" :key="post.id" v-for="(post, index) in posts" class="post">
             <div class="post__box">
                 <div class="post__box__pseudo">
@@ -71,6 +72,7 @@ export default {
             isAdmin: undefined,
             overlay: 0,
             errorMessage: undefined,
+            errorPost: undefined,
 
         }
     },
@@ -94,18 +96,24 @@ export default {
          * Permet de modifier un post
          */
         editPost(postId) {
+            let titre = document.querySelector('#titre').value;
             let url = document.querySelector('#url').value;
             // Pour avoir une url avec une extention a la fin.
             const regex = '(?:jpg|gif|png|jpeg)'
 
-            if (url.match(regex) == null) {
-                this.errorMessage = 'Url invalide !';
+            if (titre.length > 255) {
+                this.errorMessage = 'Trop de caractére !'
             } else {
-                this.postService.editPost(postId).then(() => {
-                    this.getPosts();
-                    this.overlay = 0;
-                })
+                if (url.match(regex) == null) {
+                    this.errorMessage = 'Url invalide !';
+                } else {
+                    this.postService.editPost(postId).then(() => {
+                        this.getPosts();
+                        this.overlay = 0;
+                    })
+                }
             }
+
 
             
         },
@@ -136,14 +144,18 @@ export default {
          * Permet d'afficher tout les posts
          */
         getPosts() {
-            this.postService.getPosts().then(data => {
-                // Stocker tout les posts dans un array mettre les plus récent en premier
-                this.posts = data;
-                this.posts.reverse();
+            this.postService.getPosts()
+                .then(data => {
+                    // Stocker tout les posts dans un array mettre les plus récent en premier
+                    this.posts = data;
+                    this.posts.reverse();
 
-                this.isAdmin = JSON.parse(localStorage.getItem('user', [1])).isAdmin;
-                this.userId = JSON.parse(localStorage.getItem('user', [1])).id;
-            })
+                    this.isAdmin = JSON.parse(localStorage.getItem('user', [1])).isAdmin;
+                    this.userId = JSON.parse(localStorage.getItem('user', [1])).id;
+                })
+                .catch(() => {
+                    this.errorPost = 'Une erreur est survenue !';
+                }); 
         }
     },
 }

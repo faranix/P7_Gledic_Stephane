@@ -51,22 +51,28 @@ export default {
      * Permet de crée un nouveau post
      */
     newPost() {
+      let titre = document.querySelector('#titre').value;
       let url = document.querySelector('#url').value;
-      const regex = '(?:jpg|gif|png)'
+      const regex = '(?:jpg|gif|png)';
+      
 
-      if (url.match(regex) == null) {
-        this.errorMessage = 'Url invalide !';
+      if (titre.length > 255) {
+        this.errorMessage = 'Trop de caractére !'
       } else {
-        this.postService.newPost();
-        this.overlay = 0;
-        // permet d'utiliser la methods getPosts de l'enfants
-        this.$children[2].getPosts();
+        if (url.match(regex) == null) {
+          this.errorMessage = 'Url invalide !';
+        } else {
+          this.postService.newPost();
+          this.overlay = 0;
+          // permet d'utiliser la methods getPosts de l'enfants
+          this.$children[2].getPosts();
+        }
       }
     },
 
     closeOverlay() {
       this.overlay = 0;
-    }
+    },
   },
   mounted() {
     // Verification du token grace au headers et récuperation des données dans le localStorage

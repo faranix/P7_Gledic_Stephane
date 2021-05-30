@@ -1,9 +1,27 @@
-// Views
+// App Scss // 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f2f2f2;
+}
+
+#app {
+    font-family: 'Roboto', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+// Views // 
 @import "./views/home.scss";
 @import "./views/login.scss";
 @import "./views/singup.scss";
 
-// Components
+// Components // 
 @import "./components/commentaire.scss";
 @import "./components/copyright.scss";
 @import "./components/menuhome.scss";

@@ -144,6 +144,9 @@
         top: 0;
         right: 0;
         &__open {
+            position: fixed;
+            top: 0;
+            left: 0;
             justify-content: space-around;
             height: 100vh;
             width: 100vw;
@@ -191,6 +194,18 @@
 }
 
 @media screen and (max-width: 425px) {
+
+    .navhome__open {
+        .navhome__open__profile__pseudo {
+            margin-top: 0px;
+        }
+
+        &__paragraphe__text {
+            margin-bottom: 0px;
+            margin-top: 5px;
+        }
+    }
+
     .navhome__close {
         margin-top: -15%;
     }
