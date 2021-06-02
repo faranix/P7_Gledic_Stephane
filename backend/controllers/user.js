@@ -2,32 +2,46 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../service/db');
+const passwordValidator = require('password-validator');
+
+// Creation d'un schema de mot de passe
+let passwordCheck = new passwordValidator();
+
+passwordCheck
+.is().min(4)
 
 /**
  * Permet de crée un nouveau compte
  */
 exports.userSingup = (req, res, next) => {
-    // Stock les données rentré par utilisateur !
-    const user = req.body;
 
-    // Avoir la longeur de l'objet (La verification des champs ce fait dans le frontend).
-    const userLength = Object.keys(user).length;
+    console.log(req.body);
 
-    // Verifie que tout les champs sont bien remplie !
-    if (userLength === 3) {
-        // On crypte le mot de passe 10 fois
-        bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            // On crée un nouveau utilisateur dans la base de données
-            db.query(`INSERT INTO user(email, password, pseudo) VALUES ("${req.body.email}", "${hash}", "${req.body.pseudo}");`, (err, result) => {
-                if (err) throw err;
-                console.log('post réussi');
-            });
-            res.status(201).json({ message: 'Utilisateur Crée !' });
-        })
-        .catch(error => res.status(400).json({ error }));
+    if (passwordCheck.validate(req.body.password)) {
+        // Stock les données rentré par utilisateur !
+        const user = req.body;
+    
+        // Avoir la longeur de l'objet (La verification des champs ce fait dans le frontend).
+        const userLength = Object.keys(user).length;
+    
+        // Verifie que tout les champs sont bien remplie !
+        if (userLength === 3) {
+            // On crypte le mot de passe 10 fois
+            bcrypt.hash(req.body.password, 10)
+            .then(hash => {
+                // On crée un nouveau utilisateur dans la base de données
+                db.query(`INSERT INTO user(email, password, pseudo) VALUES ("${req.body.email}", "${hash}", "${req.body.pseudo}");`, (err, result) => {
+                    if (err) throw err;
+                    console.log('post réussi');
+                });
+                res.status(201).json({ message: 'Utilisateur Crée !' });
+            })
+            .catch(error => res.status(400).json({ error }));
+        } else {
+            res.status(401).json({ message: 'Veuillez remplir tout les champs !' });
+        }
     } else {
-        res.status(401).json({ message: 'Veuillez remplir tout les champs !' });
+        res.status(401).json({ message: 'Votre mot de passe doit avoir minimum 4 caractères !' });
     }
 };
 
@@ -130,3 +144,26 @@ exports.deleteAccount = (req, res, next) => {
         });
     });
 };
+
+// EN COURS 
+/**
+ * Permet de changer l'image d'un user
+ */
+exports.changeImage = (req, res, next) => {
+
+    console.log('log 1:', req.body);
+    console.log('log 2:', req.files);
+
+    res.status(200).json({message: 'test'});
+
+    /*
+   const fileNameOriginal = req.body.name;
+   const newFileName = fileNameOriginal.split(' ').join('_');
+
+   db.query(`UPDATE user SET picture="${newFileName}" WHERE id=${req.body.userId} LIMIT 1`, (err, result) => {
+       if (err) throw err;
+
+       res.status(200).json({ message: 'Photo Modofier !' });
+   })
+   */
+}
