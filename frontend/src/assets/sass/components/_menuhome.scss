@@ -20,11 +20,22 @@
         width: 150px;
         height: 150px;
         border-radius: 100%;
-        border: solid 5px #23022E;
+        cursor: pointer;
 
         &__pseudo {
             font-size: 20px;
             color: #EFF8E2;
+            z-index: 3;
+            color: #23022E;
+        }
+
+        &__img {
+            position: absolute;
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+            border-radius: 100%;
+            border: solid 8px #23022E;
         }
     }
 
@@ -82,11 +93,20 @@
 
             }         
         }
+
+        &__form {
+            display: flex;
+            flex-direction: column;
+        }
     }
 
     &:hover {
         background-color: #563280ef;
         transition: all 200ms ease-out;
+    }
+
+    #changefile {
+        display: none;
     }
 }
 
@@ -156,6 +176,11 @@
                 position: initial;
                 width: 200px;
                 height: 200px;
+
+                &__img {
+                    width: 200px;
+                    height: 200px;
+                }
             }
 
             &__paragraphe__text {
