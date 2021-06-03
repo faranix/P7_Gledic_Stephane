@@ -77,6 +77,7 @@ export default {
         }
     },
     mounted() {
+        // Appel les posts
         this.getPosts();
     },
     methods: {    
@@ -113,9 +114,6 @@ export default {
                     })
                 }
             }
-
-
-            
         },
 
         /**
@@ -149,6 +147,14 @@ export default {
                     // Stocker tout les posts dans un array mettre les plus récent en premier
                     this.posts = data;
                     this.posts.reverse();
+
+                    // Vérifie si il y a des posts crée sinon affiche un message !
+                    if (this.posts.length == 0) {
+                        this.errorPost = 'Soyez le premier a poster !';
+                    } else {
+                        this.errorPost = undefined;
+                        this.getPosts();
+                    }
 
                     this.isAdmin = JSON.parse(localStorage.getItem('user', [1])).isAdmin;
                     this.userId = JSON.parse(localStorage.getItem('user', [1])).id;

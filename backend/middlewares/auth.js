@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 /**
  * Vérifie le token
@@ -19,3 +20,6 @@ module.exports = (req, res, next) => {
         res.status(401).json({ message: 'Requete non authentifié !'});
     }
 }
+
+
+

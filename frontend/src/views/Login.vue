@@ -63,17 +63,15 @@ export default {
       .then(res => {
         if (res.status == 200) {
           res.json().then(data => {
-            console.log(data);
             // Stock les données de user dans le localstorage
             localStorage.setItem('token', data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
 
-            window.location.href = `http://localhost:8080/#/home`
+            window.location.href = `http://localhost:8080/#/home`;
           })
         } else {
           res.json().then(data => {
-            console.log(data);
-            this.errorMessage = data.message
+            this.errorMessage = data.message;
           })
         }
       })

@@ -1,4 +1,5 @@
 export default class AccountService {
+    
     /**
      * Permet de supprimer le compte
      */
