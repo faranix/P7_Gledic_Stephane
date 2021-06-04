@@ -12,8 +12,9 @@
             <form class="navhome__open__paragraphe__form" v-if="changePhoto == 1" method="post" enctype="multipart/form-data">
                 <input class="navhome__open__paragraphe__form__input" type="file" accept="image/*" required>
                 <div>
-                    <button @click="uploadPhoto()" type="button">Changer</button>
-                    <button @click="changePhoto = 0" type="button">Annuler</button>
+                    <button class="navhome__open__paragraphe__form__btn" @click="uploadPhoto()" type="button">Changer</button>
+                    <button class="navhome__open__paragraphe__form__btn" @click="deletePhoto()" type="button">Supprimer</button>
+                    <button class="navhome__open__paragraphe__form__btn" @click="changePhoto = 0" type="button">Annuler</button>
                 </div>
             </form>
             <p class="navhome__open__paragraphe__text" @click="deleteAccountOpen = 1">Supprimer le compte</p>
@@ -40,7 +41,7 @@ export default {
             deleteAccountOpen: 0,
             changePhoto: 0,
             accountService: new AccountService,
-            photo_de_profil: undefined
+            photo_de_profil: require('../assets/images/groupamania.jpg')
         }
     },
     props: {
@@ -50,9 +51,26 @@ export default {
         }
     },
     mounted() {
-         if (this.photo_de_profil == undefined) {
-            this.photo_de_profil = require('../assets/images/groupamania.jpg')
-         } 
+        /**
+         * Permet d'obtenir image de l'utilisateur
+         */
+        fetch('http://localhost:3000/api/getimage', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+        })
+        .then(res => {
+            res.json().then(data => {
+                if (data[0].picture == null) {
+                    this.photo_de_profil = require('../assets/images/groupamania.jpg')
+                } else {
+                    this.photo_de_profil = `http://localhost:3000/${data[0].picture}`;
+                }
+            })
+        })
+        .catch(() => console.log('Une erreur !'));
     },
     methods: {
         /**
@@ -69,34 +87,64 @@ export default {
             this.accountService.deleteAccount();
         },
 
+        /**
+         * Permet de changer de photo de profile 
+         */
         uploadPhoto() {
             let input = document.querySelector('.navhome__open__paragraphe__form__input');
 
-            // Crée un blob qui va changer la photo de profil
+            // Vérifie si il y a une photo ou non 
             if (input.value == '' || undefined || null) {
+                // Si il y a pas de photo mettre cette image par defaut 
                 this.photo_de_profil = require('../assets/images/groupamania.jpg')
             } else {
-                let url = URL.createObjectURL(input.files[0]);
-                console.log(url);
-                this.photo_de_profil = url;
+                // Crée un FormData pour envoyer un fichier
+                const formData = new FormData()
+                formData.append('image', input.files[0]);
 
-                // En cours
-                const data = {
-                    file: input.files[0],
-                    userId: JSON.parse(localStorage.getItem('user')).id
-                };
-
+                // Envoie des data aux backend 
                 fetch('http://localhost:3000/api/changeimage', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },
-                    body: JSON.stringify(data)
+                    body: formData
                 })
+                .then(res => {
+                    res.json().then(data => {
+                        // Remplace la photo par la photo de la data base 
+                        this.photo_de_profil = `http://localhost:3000/${data[0].picture}`;
+                    })
+                })
+                .catch(() => console.log("Une erreur viens d'arriver"));
             }
 
             this.changePhoto = 0;
         },
+
+        /**
+         * Permet de Supprimer l'image de l'utilisateur !
+         */
+        deletePhoto() {
+            const data = {
+                userId: JSON.parse(localStorage.getItem('user')).id
+            }
+
+            fetch('http://localhost:3000/api/deleteimage', {
+                method: 'delete',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => {
+                res.json().then(() => {
+                    this.photo_de_profil = require('../assets/images/groupamania.jpg');
+                })
+            })
+            .catch(() => console.log('Erreur'));
+        }
     }
 }
 </script>

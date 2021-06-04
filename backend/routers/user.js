@@ -6,12 +6,18 @@ const auth = require('../middlewares/auth');
 const multer = require('../middlewares/multer-config');
 
 
-
+// Routes du compte
 router.post('/inscription', usersCtrl.userSingup);
 router.post('/login', usersCtrl.userLogin);
 router.get('/connect',auth, usersCtrl.userConnected);
+
+// Route pour supprimer le compte
 router.delete('/deleteaccount', auth, usersCtrl.deleteAccount);
-router.post('/changeimage', multer, usersCtrl.changeImage);
+
+// Routes pour l'image
+router.post('/changeimage', auth, multer, usersCtrl.changeImage);
+router.get('/getimage', usersCtrl.getimage);
+router.delete('/deleteimage', usersCtrl.deleteimage);
 
 
 module.exports = router;

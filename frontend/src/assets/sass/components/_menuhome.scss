@@ -23,10 +23,10 @@
         cursor: pointer;
 
         &__pseudo {
-            font-size: 20px;
+            font-size: 22px;
+            margin-top: 220px;
             color: #EFF8E2;
             z-index: 3;
-            color: #23022E;
         }
 
         &__img {
@@ -61,7 +61,8 @@
 
         &__text {
             font-weight: bold;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
+            padding: 0px 5px;
             cursor: pointer;
             color: #EFF8E2;
 
@@ -97,6 +98,27 @@
         &__form {
             display: flex;
             flex-direction: column;
+
+            & div {
+                display: flex;
+                justify-content: space-around;
+
+                .navhome__open__paragraphe__form__btn {
+                    padding: 5px 10px;
+                    cursor: pointer;
+                    margin: 10px 5px;
+                    border: solid 2px #23022E;
+                    border-radius: 2px;
+                    font-weight: bold;
+                    font-size: 0.7rem;
+    
+                    &:hover {
+                        color: #f2f2f2;
+                        background-color: #563280;
+                        transition: all 200ms ease-in-out;
+                    }
+                }
+            }
         }
     }
 
@@ -177,6 +199,10 @@
                 width: 200px;
                 height: 200px;
 
+                &__pseudo {
+                    margin-top: 235px;
+                }
+
                 &__img {
                     width: 200px;
                     height: 200px;
@@ -221,10 +247,6 @@
 @media screen and (max-width: 425px) {
 
     .navhome__open {
-        .navhome__open__profile__pseudo {
-            margin-top: 0px;
-        }
-
         &__paragraphe__text {
             margin-bottom: 0px;
             margin-top: 5px;

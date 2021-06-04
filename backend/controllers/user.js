@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../service/db');
 const passwordValidator = require('password-validator');
+const fs = require('fs');
+require('dotenv').config();
 
 // Creation d'un schema de mot de passe
 let passwordCheck = new passwordValidator();
@@ -106,6 +108,19 @@ exports.deleteAccount = (req, res, next) => {
 
         console.log('Tout les commentaires de user sont supprimer !');
 
+        db.query(`SELECT user.picture FROM user WHERE id=${req.body.userId}`, (err, result) => {
+            if (err) throw err;
+
+            const picture = result[0].picture;
+            
+            // Permet de supprimer la photo de l'utilisateur si le compte est supprimer 
+            if (picture !== null) { 
+                fs.unlink(picture, () => {
+                    console.log('Image Supprimer !');
+                })
+            }
+        });
+
         // Supprime tout les posts lié a cette utilisateur !
         db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=${req.body.userId}`, (err, result) => {
             if (err) throw err;
@@ -145,25 +160,80 @@ exports.deleteAccount = (req, res, next) => {
     });
 };
 
-// EN COURS 
 /**
- * Permet de changer l'image d'un user
+ * Permet de changer l'image d'un utilisateur
  */
 exports.changeImage = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodeToken = jwt.verify(token, `${process.env.KEYTOKEN}`);
+    const userId = decodeToken.userId;
+    const fileNamePath = req.file.path;
 
-    console.log('log 1:', req.body);
-    console.log('log 2:', req.files);
+    db.query(`SELECT user.picture FROM user WHERE id=${userId} LIMIT 1`, (err, result) => {
+        if (err) throw err;
 
-    res.status(200).json({message: 'test'});
+        // Supprime la photo dans le fichier images
+        if (result[0].picture !== null) {    
+            const picture = result[0].picture;
+            fs.unlink(picture, () => {
+                console.log('Image Supprimer !');
+            });
+        }
 
-    /*
-   const fileNameOriginal = req.body.name;
-   const newFileName = fileNameOriginal.split(' ').join('_');
+        // Modifier la photo dans la base de données !
+        db.query(`UPDATE user SET picture="${fileNamePath}" WHERE id=${userId} LIMIT 1`, (err, result) => {
+            if (err) throw err;
+        
+            if(result) {
+                db.query(`SELECT user.picture FROM user WHERE id=${userId} LIMIT 1`, (err, result) => {
+                    if (err) throw err;
 
-   db.query(`UPDATE user SET picture="${newFileName}" WHERE id=${req.body.userId} LIMIT 1`, (err, result) => {
-       if (err) throw err;
+                    res.status(200).json(result);
+                });
+            }
+        });
+    });
+};
 
-       res.status(200).json({ message: 'Photo Modofier !' });
-   })
-   */
-}
+/**
+ * Permet d'obtenir l'image d'un utilisateur 
+ */
+exports.getimage = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodeToken = jwt.verify(token, `${process.env.KEYTOKEN}`);
+    const userId = decodeToken.userId;
+    
+    db.query(`SELECT user.picture FROM user WHERE id=${userId} LIMIT 1`, (err, result) => {
+        if (err) throw err;
+
+        res.status(200).json(result);
+    })
+};
+
+/**
+ * Permet de supprimer l'image de utilisateur
+ */
+exports.deleteimage = (req, res, next) => {
+    const userId = req.body.userId
+    db.query(`SELECT user.picture FROM user WHERE id=${userId}`, (err, result) => {
+        if (err) throw err;
+        
+        if (result) {
+            const picture = result[0].picture;
+            // Pour eviter que le serveur plante
+            if (picture !== null) { 
+                fs.unlink(picture, () => {
+                    console.log('Image Supprimer !');
+                })
+            }
+
+            db.query(`UPDATE user SET picture=NULL WHERE user.picture="${picture}" LIMIT 1`, (err, result) => {
+                if (err) throw err;
+
+                if (result) {
+                    res.status(200).json({ message: 'Image supprimer !' });
+                } 
+            });
+        }
+    });
+};
