@@ -77,7 +77,6 @@ export default {
         }
     },
     mounted() {
-        // Appel les posts
         this.getPosts();
     },
     methods: {    
@@ -122,6 +121,11 @@ export default {
         deletePost(id, index) {
             this.postService.deletePost(id);
             this.posts.splice(index, 1);
+
+            // Pour réaficher le message si jamais le array ce retrouve vide de nouveau
+            if (this.posts.length === 0) {
+                this.errorPost = 'Soyez le premier a poster !';
+            }
         },
 
         /**
@@ -153,7 +157,6 @@ export default {
                         this.errorPost = 'Soyez le premier a poster !';
                     } else {
                         this.errorPost = undefined;
-                        this.getPosts();
                     }
 
                     this.isAdmin = JSON.parse(localStorage.getItem('user', [1])).isAdmin;

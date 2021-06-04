@@ -19,7 +19,7 @@ exports.createPost = (req, res, next) => {
         console.log('Requete non authentique !');
         res.status(400).json({ message: 'Requete non authentique !' });
     }
-}
+};
 
 
 /**
@@ -38,7 +38,7 @@ exports.editPost = (req, res, next) => {
                 });
             }
         });
-}
+};
 
 
 /**
@@ -53,9 +53,10 @@ exports.deletePost = (req, res, next) => {
             if (err) throw err;
 
             res.status(200).json({ message: 'Post Supprimer !' });
-        })
-    })
-}
+        });
+    });
+};
+
 /**
  * Afficher un post
  */
@@ -65,5 +66,5 @@ exports.getPost = (req, res, next) => {
 
         res.status(200).json(result);
 
-    })
-}
+    });
+};

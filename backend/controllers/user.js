@@ -108,6 +108,19 @@ exports.deleteAccount = (req, res, next) => {
 
         console.log('Tout les commentaires de user sont supprimer !');
 
+        db.query(`SELECT user.picture FROM user WHERE id=${req.body.userId}`, (err, result) => {
+            if (err) throw err;
+
+            const picture = result[0].picture;
+            
+            // Permet de supprimer la photo de l'utilisateur si le compte est supprimer 
+            if (picture !== null) { 
+                fs.unlink(picture, () => {
+                    console.log('Image Supprimer !');
+                })
+            }
+        });
+
         // Supprime tout les posts lié a cette utilisateur !
         db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=${req.body.userId}`, (err, result) => {
             if (err) throw err;
@@ -176,8 +189,8 @@ exports.changeImage = (req, res, next) => {
                     if (err) throw err;
 
                     res.status(200).json(result);
-                })
-            };
+                });
+            }
         });
     });
 };
@@ -208,7 +221,7 @@ exports.deleteimage = (req, res, next) => {
         if (result) {
             const picture = result[0].picture;
             // Pour eviter que le serveur plante
-            if (result[0].picture !== null) { 
+            if (picture !== null) { 
                 fs.unlink(picture, () => {
                     console.log('Image Supprimer !');
                 })
