@@ -3,6 +3,9 @@
 ## Backend
 
 Exécuter `npm install` pour installer toutes les dépendances puis exécuter `nodemon server.js` pour lancer le serveur nodejs
+A la racine du fichier backend crée un fichier `.env`.
+
+KEYTOKEN= `Ce que vous voulez !`
 
 ## Frontend
 
