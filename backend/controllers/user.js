@@ -10,41 +10,53 @@ require('dotenv').config();
 let passwordCheck = new passwordValidator();
 
 passwordCheck
-.is().min(4)
+.is().min(4);
 
 /**
  * Permet de crée un nouveau compte
  */
 exports.userSingup = (req, res, next) => {
+    db.query(`SELECT user.email FROM user`, (err, result) => {
+        if (err) throw err;
+        const dataEmail = [];
+        result.forEach(element => {
+            if (element.email == req.body.email) {
+                dataEmail.push(element.email);
+            }
+        });
 
-    console.log(req.body);
-
-    if (passwordCheck.validate(req.body.password)) {
-        // Stock les données rentré par utilisateur !
-        const user = req.body;
-    
-        // Avoir la longeur de l'objet (La verification des champs ce fait dans le frontend).
-        const userLength = Object.keys(user).length;
-    
-        // Verifie que tout les champs sont bien remplie !
-        if (userLength === 3) {
-            // On crypte le mot de passe 10 fois
-            bcrypt.hash(req.body.password, 10)
-            .then(hash => {
-                // On crée un nouveau utilisateur dans la base de données
-                db.query(`INSERT INTO user(email, password, pseudo) VALUES ("${req.body.email}", "${hash}", "${req.body.pseudo}");`, (err, result) => {
-                    if (err) throw err;
-                    console.log('post réussi');
-                });
-                res.status(201).json({ message: 'Utilisateur Crée !' });
-            })
-            .catch(error => res.status(400).json({ error }));
+        // Vérifie si email est deja dans la base de donnees 
+        if (dataEmail.length > 0) {
+            res.status(400).json({ message: 'Email deja utiliser !' });
         } else {
-            res.status(401).json({ message: 'Veuillez remplir tout les champs !' });
+            if (passwordCheck.validate(req.body.password)) {
+                // Stock les données rentré par utilisateur !
+                const user = req.body;
+            
+                // Avoir la longeur de l'objet (La verification des champs ce fait dans le frontend).
+                const userLength = Object.keys(user).length;
+            
+                // Verifie que tout les champs sont bien remplie !
+                if (userLength === 3) {
+                    // On crypte le mot de passe 10 fois
+                    bcrypt.hash(req.body.password, 10)
+                    .then(hash => {
+                        // On crée un nouveau utilisateur dans la base de données
+                        db.query(`INSERT INTO user(email, password, pseudo) VALUES ("${req.body.email}", "${hash}", "${req.body.pseudo}");`, (err, result) => {
+                            if (err) throw err;
+                            console.log('post réussi');
+                        });
+                        res.status(201).json({ message: 'Utilisateur Crée !' });
+                    })
+                    .catch(error => res.status(400).json({ error }));
+                } else {
+                    res.status(401).json({ message: 'Veuillez remplir tout les champs !' });
+                }
+            } else {
+                res.status(401).json({ message: 'Votre mot de passe doit avoir minimum 4 caractères !' });
+            }
         }
-    } else {
-        res.status(401).json({ message: 'Votre mot de passe doit avoir minimum 4 caractères !' });
-    }
+    });
 };
 
 /**
@@ -107,20 +119,6 @@ exports.deleteAccount = (req, res, next) => {
         if (err) throw err;
 
         console.log('Tout les commentaires de user sont supprimer !');
-
-        db.query(`SELECT user.picture FROM user WHERE id=${req.body.userId}`, (err, result) => {
-            if (err) throw err;
-
-            const picture = result[0].picture;
-            
-            // Permet de supprimer la photo de l'utilisateur si le compte est supprimer 
-            if (picture !== null) { 
-                fs.unlink(picture, () => {
-                    console.log('Image Supprimer !');
-                })
-            }
-        });
-
         // Supprime tout les posts lié a cette utilisateur !
         db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=${req.body.userId}`, (err, result) => {
             if (err) throw err;
