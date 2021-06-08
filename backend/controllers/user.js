@@ -41,8 +41,15 @@ exports.userSingup = (req, res, next) => {
                     // On crypte le mot de passe 10 fois
                     bcrypt.hash(req.body.password, 10)
                     .then(hash => {
+
+                        let insert = [
+                            req.body.email,
+                            hash,
+                            req.body.pseudo
+                        ];
+
                         // On crée un nouveau utilisateur dans la base de données
-                        db.query(`INSERT INTO user(email, password, pseudo) VALUES ("${req.body.email}", "${hash}", "${req.body.pseudo}");`, (err, result) => {
+                        db.query(`INSERT INTO user(email, password, pseudo) VALUES (?, ?, ?);`, insert, (err, result) => {
                             if (err) throw err;
                             console.log('post réussi');
                         });
@@ -63,7 +70,11 @@ exports.userSingup = (req, res, next) => {
  * Permet de ce connecter a un profile 
  */
 exports.userLogin = (req, res, next) => {
-    db.query(`SELECT * FROM user WHERE email = "${req.body.email}"`, (err, result) => {
+    let insert = [
+        req.body.email
+    ]
+
+    db.query(`SELECT * FROM user WHERE email = ?`, insert, (err, result) => {
         if(err) throw err;
         
         if (req.body.email == '' || result.length == 0) {
@@ -75,6 +86,7 @@ exports.userLogin = (req, res, next) => {
                 pseudo: result[0].pseudo,
                 isAdmin: result[0].isAdmin
             };
+            
             console.log(userData);
             if (userData != undefined) {
                 // Comparer le mot de passe de la requete et celui de la base de données
@@ -114,9 +126,12 @@ exports.userConnected = (req, res, next) => {
  * Permet de supprimer le compte
  */
 exports.deleteAccount = (req, res, next) => {
+    let insert = [
+        req.body.userId
+    ];
 
     // Supprimer la photo du fichier image
-    db.query(`SELECT user.picture FROM user WHERE id=${req.body.userId}`, (err, result) => {
+    db.query(`SELECT user.picture FROM user WHERE id=?`, insert, (err, result) => {
         if (err) throw err;
         
         if (result) {
@@ -130,15 +145,15 @@ exports.deleteAccount = (req, res, next) => {
         }
     });
     
-    db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=${req.body.userId}`, (err, result) => {
+    db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=?`, insert, (err, result) => {
         if (err) throw err;
 
         if (result.length == 0) {
-            db.query(`DELETE FROM commentaire WHERE user_id=${req.body.userId}`, (err, result) => {
+            db.query(`DELETE FROM commentaire WHERE user_id=?`, insert, (err, result) => {
                 if (err) throw err;
 
                 // Supprime tout le profil de l'utilisateur !
-                db.query(`DELETE FROM user WHERE user.id=${req.body.userId}`, (err, result) => {
+                db.query(`DELETE FROM user WHERE user.id=?`, insert, (err, result) => {
                     if (err) throw err;
 
                     res.status(200).json({ message: 'Utilisateur supprimer !' });
@@ -147,12 +162,12 @@ exports.deleteAccount = (req, res, next) => {
             });
         } else {
             // Supprime tout les commentaires lié a cette utilisateur !
-            db.query(`DELETE FROM commentaire WHERE user_id=${req.body.userId}`, (err, result) => {
+            db.query(`DELETE FROM commentaire WHERE user_id=?`, insert, (err, result) => {
                 if (err) throw err;
         
                 console.log('Tout les commentaires de user sont supprimer !');
                 // Supprime tout les posts lié a cette utilisateur !
-                db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=${req.body.userId}`, (err, result) => {
+                db.query(`SELECT post.* FROM user INNER JOIN post ON user.id = user_id WHERE user.id=?`, insert, (err, result) => {
                     if (err) throw err;
         
                     result.forEach(element => {
@@ -171,13 +186,13 @@ exports.deleteAccount = (req, res, next) => {
                             }
                             
                             // Supprime tout les posts de user
-                            db.query(`DELETE FROM post WHERE user_id=${req.body.userId}`, (err, result) => {
+                            db.query(`DELETE FROM post WHERE user_id=?`, insert, (err, result) => {
                                 if (err) throw err;
                                 
                                 console.log('Tout les posts de user sont supprimer !');
                             
                                 // Supprime tout le profil de l'utilisateur !
-                                db.query(`DELETE FROM user WHERE user.id=${req.body.userId}`, (err, result) => {
+                                db.query(`DELETE FROM user WHERE user.id=?`, insert, (err, result) => {
                                     if (err) throw err;
         
                                     res.status(200).json({ message: 'Utilisateur supprimer !' });
@@ -189,10 +204,7 @@ exports.deleteAccount = (req, res, next) => {
                 });
             });
         }
-    });
-
-    
-    
+    });  
 };
 
 /**
