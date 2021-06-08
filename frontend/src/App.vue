@@ -5,7 +5,7 @@
 </template>
 
 <script>
-// Service
+// Les Services
 import Service from '@/service/service.js';
 
 export default {
