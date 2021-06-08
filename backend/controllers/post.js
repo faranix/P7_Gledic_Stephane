@@ -7,10 +7,16 @@ const jwt = require('jsonwebtoken');
 exports.createPost = (req, res, next) => {
     const token = jwt.decode(req.headers.authorization.split(' ')[1]);
     const decode = token.userId;
+
+    let inserts = [
+        req.body[1],
+        req.body[2],
+        req.body[0]
+    ];
     
     // Verifie que id du local storage et celui du token son identique.
     if (decode == req.body[0]) {
-        db.query(`INSERT INTO post(title, url, user_id) VALUES ("${req.body[1]}", "${req.body[2]}", ${req.body[0]}) `, (err, result) => {
+        db.query(`INSERT INTO post(title, url, user_id) VALUES (?, ?, ?) `, inserts, (err, result) => {
             if (err) throw err;
     
             res.status(201).json(result);
@@ -25,9 +31,15 @@ exports.createPost = (req, res, next) => {
 /**
  * Modifier un post
  */
-exports.editPost = (req, res, next) => {   
+exports.editPost = (req, res, next) => {  
+    let inserts = [
+        req.body.title,
+        req.body.url,
+        req.body.postId
+    ];
+    
     // Verifie que id du local storage et celui du token son identique.
-        db.query(`UPDATE post SET title="${req.body.title}", url="${req.body.url}" WHERE id=${req.body.postId} LIMIT 1 `, (err, result) => {
+        db.query(`UPDATE post SET title=?, url=? WHERE id=? LIMIT 1 `, inserts, (err, result) => {
             if (err) throw err;
             
             if (result) {
@@ -45,11 +57,14 @@ exports.editPost = (req, res, next) => {
  * Supprimer un post
  */
 exports.deletePost = (req, res, next) => {
-    console.log(req.body.id);
-    db.query(`DELETE FROM commentaire WHERE post_id = ${req.body.id}`, (err, result) => {
+    let inserts = [
+        req.body.id
+    ];
+
+    db.query(`DELETE FROM commentaire WHERE post_id = ?`, inserts, (err, result) => {
         if (err) throw err;
         
-        db.query(`DELETE FROM post WHERE id = ${req.body.id}`, (err, result) => {
+        db.query(`DELETE FROM post WHERE id = ?`, inserts, (err, result) => {
             if (err) throw err;
 
             res.status(200).json({ message: 'Post Supprimer !' });

@@ -6,7 +6,13 @@ const db = require('../service/db');
  * Permet de poster un commentaire !
  */
 exports.postCommentaire = (req, res, next) => {
-    db.query(`INSERT INTO commentaire(content, user_id, post_id) VALUES ("${req.body.content}", ${req.body.userId}, ${req.body.postId})`, (err, result) => {
+    let inserts = [
+        req.body.content,
+        req.body.userId,
+        req.body.postId
+    ];
+
+    db.query(`INSERT INTO commentaire(content, user_id, post_id) VALUES (?, ?, ?)`, inserts, (err, result) => {
         if (err) throw err;
 
         db.query(`SELECT commentaire.*, user.pseudo FROM commentaire INNER JOIN user ON user_id = user.id`, (err, result) => {
@@ -15,6 +21,8 @@ exports.postCommentaire = (req, res, next) => {
             res.status(201).json(result);
         })
     });
+
+    
 };
 
 /**
@@ -32,7 +40,11 @@ exports.getCommentaire = (req, res, next) => {
  * Permet de supprimer un commentaire !
  */
 exports.deleteCommentaire = (req, res, next) => {
-    db.query(`DELETE FROM commentaire WHERE id=${req.body.id} LIMIT 1`, (err, result) => {
+    let inserts = [
+        req.body.id
+    ];
+
+    db.query(`DELETE FROM commentaire WHERE id=? LIMIT 1`, inserts, (err, result) => {
         if (err) throw err;
 
         res.status(200).json({ message: 'Commentaire supprimer !' });
@@ -43,13 +55,23 @@ exports.deleteCommentaire = (req, res, next) => {
  * Permet de modifier un commentaire !
  */
 exports.editCommentaire = (req, res, next) => {
-    db.query(`UPDATE commentaire SET content="${req.body.content}" WHERE id=${req.body.id} LIMIT 1`, (err, result) => {
+    let insertsUpdate = [
+        req.body.content,
+        req.body.id
+    ];
+
+    db.query(`UPDATE commentaire SET content=? WHERE id=? LIMIT 1`, insertsUpdate, (err, result) => {
         if (err) throw err;
 
-        db.query(`SELECT commentaire.*, user.pseudo FROM commentaire INNER JOIN user ON user_id = user.id WHERE commentaire.id=${req.body.id}`, (err, result) => {
+        let insertsSelect = [
+            req.body.id
+        ];
+
+        db.query(`SELECT commentaire.*, user.pseudo FROM commentaire INNER JOIN user ON user_id = user.id WHERE commentaire.id=?`, insertsSelect, (err, result) => {
             if (err) throw err;
 
             res.status(200).json(result);
         })
     });
 };
+

@@ -204,7 +204,11 @@ exports.changeImage = (req, res, next) => {
     const userId = decodeToken.userId;
     const fileNamePath = req.file.path;
 
-    db.query(`SELECT user.picture FROM user WHERE id=${userId} LIMIT 1`, (err, result) => {
+    let inserts = [
+        userId
+    ];
+
+    db.query(`SELECT user.picture FROM user WHERE id=? LIMIT 1`, inserts, (err, result) => {
         if (err) throw err;
 
         // Supprime la photo dans le fichier images
@@ -215,12 +219,17 @@ exports.changeImage = (req, res, next) => {
             });
         }
 
+        let insertsChange = [
+            fileNamePath, 
+            userId
+        ];
+
         // Modifier la photo dans la base de données !
-        db.query(`UPDATE user SET picture="${fileNamePath}" WHERE id=${userId} LIMIT 1`, (err, result) => {
+        db.query(`UPDATE user SET picture=? WHERE id=? LIMIT 1`, insertsChange, (err, result) => {
             if (err) throw err;
         
             if(result) {
-                db.query(`SELECT user.picture FROM user WHERE id=${userId} LIMIT 1`, (err, result) => {
+                db.query(`SELECT user.picture FROM user WHERE id=? LIMIT 1`, inserts, (err, result) => {
                     if (err) throw err;
 
                     res.status(200).json(result);
@@ -237,8 +246,12 @@ exports.getimage = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodeToken = jwt.verify(token, `${process.env.KEYTOKEN}`);
     const userId = decodeToken.userId;
+
+    let inserts = [
+        userId
+    ]
     
-    db.query(`SELECT user.picture FROM user WHERE id=${userId} LIMIT 1`, (err, result) => {
+    db.query(`SELECT user.picture FROM user WHERE id=? LIMIT 1`, inserts, (err, result) => {
         if (err) throw err;
 
         res.status(200).json(result);
@@ -249,8 +262,11 @@ exports.getimage = (req, res, next) => {
  * Permet de supprimer l'image de utilisateur
  */
 exports.deleteimage = (req, res, next) => {
-    const userId = req.body.userId
-    db.query(`SELECT user.picture FROM user WHERE id=${userId}`, (err, result) => {
+    let inserts = [
+        req.body.userId,
+    ];
+
+    db.query(`SELECT user.picture FROM user WHERE id=?`, inserts, (err, result) => {
         if (err) throw err;
         
         if (result) {
@@ -262,7 +278,11 @@ exports.deleteimage = (req, res, next) => {
                 })
             }
 
-            db.query(`UPDATE user SET picture=NULL WHERE user.picture="${picture}" LIMIT 1`, (err, result) => {
+            let insertsUpdate = [
+                picture
+            ];
+
+            db.query(`UPDATE user SET picture=NULL WHERE user.picture=? LIMIT 1`, insertsUpdate, (err, result) => {
                 if (err) throw err;
 
                 if (result) {

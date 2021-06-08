@@ -4,7 +4,6 @@
        title="Connexion"
         />
 
-
       <form @keypress.enter='loginUser()' class="form" method="post">
         <div class="form__box">
           <label for="email">Email</label>
