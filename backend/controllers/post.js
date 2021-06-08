@@ -43,7 +43,11 @@ exports.editPost = (req, res, next) => {
             if (err) throw err;
             
             if (result) {
-                db.query(`SELECT post.*, user.pseudo FROM post INNER JOIN user ON user.id = user_id WHERE post.id=${req.body.postId}`, (err, result) => {
+                let insertsSelect = [
+                    req.body.postId
+                ];
+
+                db.query(`SELECT post.*, user.pseudo FROM post INNER JOIN user ON user.id = user_id WHERE post.id=?`, insertsSelect, (err, result) => {
                     if (err) throw err;
 
                     res.status(200).json(result);
