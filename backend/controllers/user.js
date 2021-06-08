@@ -86,6 +86,7 @@ exports.userLogin = (req, res, next) => {
                 pseudo: result[0].pseudo,
                 isAdmin: result[0].isAdmin
             };
+            
             console.log(userData);
             if (userData != undefined) {
                 // Comparer le mot de passe de la requete et celui de la base de données
